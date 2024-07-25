@@ -98,6 +98,36 @@ class Character {
     dies() {
         console.log(this.name + " has died. GAME OVER.");
     }
+    dealCards() {
+        for (let i = 0; i < this.handSize; i++) {
+            if (this.drawPile.length == 0) {
+                this.makeNewDrawPile();
+            }
+    
+            let randomIndex = Math.floor(Math.random() * this.drawPile.length);
+            let randomCardId = hero.drawPile[randomIndex];
+    
+            cards.forEach(card => {
+                if (randomCardId == card.id) {
+                    $(".hand").append(`<img class="card" data-id="${card.id}" src="./img/cards/${card.src}">`);
+                }
+            });
+    
+            this.drawPile.splice(randomIndex, 1);
+        }
+    }
+    makeNewDrawPile() {
+        this.drawPile = this.discardPile;
+        this.discardPile = [];
+    }
+    discardCards() {
+        let remainingCards = document.querySelectorAll(".card");
+        remainingCards.forEach(card => {
+            let cardId = parseInt($(card).attr("data-id"));
+            this.discardPile.push(cardId);
+            $(card).remove();
+        })
+    }
     startTurn() {
         if (this.block != 0) {
             this.block = 0;
@@ -105,9 +135,12 @@ class Character {
         }
         this.energy = 3;
         console.log(this.name + " has " + this.energy + " energy.");
+        this.drawPile = hero.deck;
+        this.dealCards();
     }
     endTurn() {
-        
+
+        this.discardCards();
     }
 }
 
@@ -153,9 +186,10 @@ class Enemy {
             this.block = 0;
             console.log(this.name + " loses all block.");
         }
+        this.decideAction();
+        this.showIntent();
     }
     endTurn() {
-        
     }
 }
 
@@ -318,45 +352,11 @@ class JawWorm extends Enemy {
 function startPlayerTurn() {
     console.log("-- Turn " + turn + " --");
     hero.startTurn();
-    enemy.decideAction();
-    enemy.showIntent();
-    hero.drawPile = hero.deck;
-    dealCards();
-}
-
-function dealCards() {
-    for (let i = 0; i < hero.handSize; i++) {
-        if (hero.drawPile.length == 0) {
-            makeNewDrawPile();
-        }
-
-        let randomIndex = Math.floor(Math.random() * hero.drawPile.length);
-        let randomCardId = hero.drawPile[randomIndex];
-
-        cards.forEach(card => {
-            if (randomCardId == card.id) {
-                $(".hand").append(`<img class="card" data-id="${card.id}" src="./img/cards/${card.src}">`);
-            }
-        });
-
-        hero.drawPile.splice(randomIndex, 1);
-    }
-}
-function discardCards() {
-    let remainingCards = document.querySelectorAll(".card");
-    remainingCards.forEach(card => {
-        let cardId = parseInt($(card).attr("data-id"));
-        hero.discardPile.push(cardId);
-        $(card).remove();
-    })
-}
-function makeNewDrawPile() {
-    hero.drawPile = hero.discardPile;
-    hero.discardPile = [];
+    enemy.startTurn();
 }
 
 function endPlayerTurn() {
-    discardCards();
+    hero.endTurn();
 }
 function startEnemyTurn() {
     enemy.performAction();
@@ -403,14 +403,12 @@ $(document).on('click','.card',function(){
     hero.energy -= cost;
 
     hero.discardPile.push(cardId+1);
-    console.log(hero.discardPile);
     $(this).remove();
 });
 
 $(".end-turn").click(function() {
     endPlayerTurn();
     startEnemyTurn();
-
 });
 
 $(heroHealthBar).attr("value", hero.currentHealth);
