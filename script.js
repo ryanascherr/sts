@@ -326,6 +326,10 @@ function startPlayerTurn() {
 
 function dealCards() {
     for (let i = 0; i < hero.handSize; i++) {
+        if (hero.drawPile.length == 0) {
+            makeNewDrawPile();
+        }
+
         let randomIndex = Math.floor(Math.random() * hero.drawPile.length);
         let randomCardId = hero.drawPile[randomIndex];
 
@@ -338,9 +342,21 @@ function dealCards() {
         hero.drawPile.splice(randomIndex, 1);
     }
 }
+function discardCards() {
+    let remainingCards = document.querySelectorAll(".card");
+    remainingCards.forEach(card => {
+        let cardId = parseInt($(card).attr("data-id"));
+        hero.discardPile.push(cardId);
+        $(card).remove();
+    })
+}
+function makeNewDrawPile() {
+    hero.drawPile = hero.discardPile;
+    hero.discardPile = [];
+}
 
 function endPlayerTurn() {
-    // discardCards();
+    discardCards();
 }
 function startEnemyTurn() {
     enemy.performAction();
@@ -369,20 +385,26 @@ let enemy = cultist;
 
 console.log(hero);
 
-$(".damage").click(function() {
-    let energyNumber = parseInt($(this).attr("data-energy"));
-    if (hero.energy < energyNumber) return;
-    let damageNumber = parseInt($(this).attr("data-number"));
-    enemy.takeDamamge(damageNumber);
-    hero.energy -= energyNumber;
-});
+$(document).on('click','.card',function(){
+    let cardId = parseInt($(this).attr("data-id")-1);
+    let card = cards[cardId];
+    let cost = card.cost;
+    if (hero.energy < cost) return;
+    if (card.type == "Attack") {
+        let damageNumber = card.damage;
+        enemy.takeDamamge(damageNumber);
+    }
+    if (card.type == "Skill") {
+        if (card.block) {
+            let blockNumber = card.block;
+            hero.gainBlock(blockNumber);
+        }
+    }
+    hero.energy -= cost;
 
-$(".block").click(function() {
-    let energyNumber = parseInt($(this).attr("data-energy"));
-    if (hero.energy < energyNumber) return;
-    let blockNumber = parseInt($(this).attr("data-number"));
-    hero.gainBlock(blockNumber);
-    hero.energy -= energyNumber;
+    hero.discardPile.push(cardId+1);
+    console.log(hero.discardPile);
+    $(this).remove();
 });
 
 $(".end-turn").click(function() {
