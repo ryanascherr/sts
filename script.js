@@ -1,10 +1,35 @@
 //TODO 
 //Death
-//Enemy turn order with block
-//Negative number with block
 //Max health being surpassed
 
+let cards = [
+    {
+        id: 1,
+        name: "Strike",
+        class: "Ironclad",
+        type: "Attack",
+        rarity: "Basic",
+        cost: 1,
+        effect: "Deal 6 damage.",
+        damage: 6,
+        src: "strike_ironclad.png"
+    },
+    {
+        id: 2,
+        name: "Defend",
+        class: "Ironclad",
+        type: "Skill",
+        rarity: "Basic",
+        cost: 1,
+        effect: "Gain 5 block.",
+        block: 5,
+        src: "defend_ironclad.png"
+    },
+]
+
 let turn = 1;
+let heroHealthBar = $(".hero progress");
+let enemyHealthBar = $(".enemies progress");
 
 class Character {
     constructor(name, maxHealth) {
@@ -15,19 +40,37 @@ class Character {
         this.isVulnerable = false;
         this.isWeak = false;
         this.energy = 3;
+        this.isAlive = true;
+        this.handSize = 5;
+        this.drawPile = [];
+        this.discardPile = [];
     }
     takeDamage(damage) {
         if (this.isVulnerable) {
             damage = damage*1.5;
         }
         if (this.block != 0) {
-            damage = damage - this.block;
+            let currentBlock = this.block;
+            this.block -= damage;
+            if (this.block < 0) {
+                this.block = 0;
+            }
+            damage = damage - currentBlock;
+            if (damage < 0) {
+                damage = 0;
+            }
         }
         this.currentHealth -= damage;
         if (this.currentHealth < 0) {
             this.currentHealth = 0;
+            this.isAlive = false;
         }
+        heroHealthBar.attr("value", this.currentHealth);
         console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
+
+        if (!this.isAlive) {
+            this.dies();
+        }
     }
     gainHealth(health) {
         this.currentHealth += health;
@@ -52,12 +95,19 @@ class Character {
     recoverWeak() {
         this.isWeak = false;
     }
-    endTurn() {
+    dies() {
+        console.log(this.name + " has died. GAME OVER.");
+    }
+    startTurn() {
         if (this.block != 0) {
             this.block = 0;
             console.log(this.name + " loses all block.");
         }
         this.energy = 3;
+        console.log(this.name + " has " + this.energy + " energy.");
+    }
+    endTurn() {
+        
     }
 }
 
@@ -70,26 +120,42 @@ class Enemy {
         this.strength = 0;
         this.dexterity = 0;
         this.declaredAction = "";
+        this.intentIcon = "";
     }
     takeDamamge(damage) {
         if (this.isVulnerable) {
             damage = damage*1.5;
         }
+        if (this.block != 0) {
+            let currentBlock = this.block;
+            this.block -= damage;
+            if (this.block < 0) {
+                this.block = 0;
+            }
+            damage = damage - currentBlock;
+            if (damage < 0) {
+                damage = 0;
+            }
+        }
         this.currentHealth -= damage;
         if (this.currentHealth < 0) {
             this.currentHealth = 0;
         }
+        enemyHealthBar.attr("value", this.currentHealth);
         console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
     }
     gainBlock(block) {
         this.block += block;
         console.log(this.name + " gains " + block + " block. They have " + this.block + " block.")
     }
-    endTurn() {
+    startTurn() {
         if (this.block != 0) {
             this.block = 0;
             console.log(this.name + " loses all block.");
         }
+    }
+    endTurn() {
+        
     }
 }
 
@@ -97,7 +163,7 @@ class Ironclad extends Character {
     constructor(name, maxHealth) {
         super(name, maxHealth);
     }
-    deck = ['strike', 'strike', 'strike', 'strike', 'strike', 'defend', 'defend', 'defend', 'defend'];
+    deck = [1, 1, 1, 1, 1, 2, 2, 2, 2];
 }
 
 class Cultist extends Enemy {
@@ -116,10 +182,13 @@ class Cultist extends Enemy {
     }
     showIntent() {
         if (this.declaredAction == "Incantation") {
+            $(".enemies .intent-icon").attr("src", `./img/intents/intent_buff.png`);
             console.log(this.name + " intends to apply a buff to themselves.")
         }
         if (this.declaredAction == "Dark Strike") {
             let attackDamage = 6 + this.strength;
+            $(".enemies .intent-icon").attr("src", `./img/intents/intent_attack.png`);
+            $(".enemies .damage-number").text(attackDamage);
             console.log(this.name + " intends to attack for " + attackDamage + " damage.");
         }
     }
@@ -152,16 +221,49 @@ class JawWorm extends Enemy {
     constructor(name, healthMin, healthMax) {
         super(name, healthMin, healthMax);
     }
+    chompCounter = 0;
+    thrashCounter = 0;
+    bellowCounter = 0;
     decideAction() {
-        let randomNumber = Math.floor(Math.random() * (3 - 1 + 1) + 1);
-        if (randomNumber == 1) {
+        if (turn == 1) {
             this.declaredAction = "Chomp";
+            this.chompCounter++;
+            return;
         }
-        if (randomNumber == 2) {
+
+        let randomNumber = Math.floor(Math.random() * (100 - 1 + 1) + 1);
+        console.log(randomNumber);
+
+        if (randomNumber <= 25) {
+            if (this.chompCounter == 1) {
+                console.log("redoing...");
+                enemy.decideAction();
+                return;
+            }
+            this.declaredAction = "Chomp";
+            this.chompCounter++;
+            this.thrashCounter = 0;
+            this.bellowCounter = 0;
+        } else if (randomNumber <= 55) {
+            if (this.thrashCounter == 2) {
+                console.log("redoing...");
+                enemy.decideAction();
+                return;
+            }
             this.declaredAction = "Thrash";
-        }
-        if (randomNumber == 3) {
+            this.thrashCounter++;
+            this.chompCounter = 0;
+            this.bellowCounter = 0;
+        } else {
+            if (this.bellowCounter == 1) {
+                console.log("redoing...");
+                enemy.decideAction();
+                return;
+            }
             this.declaredAction = "Bellow";
+            this.bellowCounter++;
+            this.thrashCounter = 0;
+            this.chompCounter = 0;
         }
     }
     showIntent() {
@@ -213,18 +315,48 @@ class JawWorm extends Enemy {
     }
 }
 
-function startTurn() {
+function startPlayerTurn() {
     console.log("-- Turn " + turn + " --");
-    // dealCards();
+    hero.startTurn();
     enemy.decideAction();
     enemy.showIntent();
+    hero.drawPile = hero.deck;
+    dealCards();
 }
 
-function endTurn() {
+function dealCards() {
+    for (let i = 0; i < hero.handSize; i++) {
+        let randomIndex = Math.floor(Math.random() * hero.drawPile.length);
+        let randomCardId = hero.drawPile[randomIndex];
+
+        cards.forEach(card => {
+            if (randomCardId == card.id) {
+                $(".hand").append(`<img class="card" data-id="${card.id}" src="./img/cards/${card.src}">`);
+            }
+        });
+
+        hero.drawPile.splice(randomIndex, 1);
+    }
+}
+
+function endPlayerTurn() {
+    // discardCards();
+}
+function startEnemyTurn() {
     enemy.performAction();
+    endEnemyTurn();
+    if (!hero.isAlive) {
+        gameOver();
+    }
+}
+function endEnemyTurn() {
     enemy.endOfTurn();
-    hero.endTurn();
     turn ++;
+    startPlayerTurn();
+}
+
+function gameOver() {
+    console.log("GAME OVER");
 }
 
 let ironclad = new Ironclad("Ironclad", 70);
@@ -233,7 +365,7 @@ let cultist = new Cultist("Cultist", 48, 54);
 let jawWorm = new JawWorm("Jaw Worm", 40, 44);
 
 let hero = ironclad;
-let enemy = jawWorm;
+let enemy = cultist;
 
 console.log(hero);
 
@@ -254,33 +386,16 @@ $(".block").click(function() {
 });
 
 $(".end-turn").click(function() {
-    endTurn();
-    startTurn();
+    endPlayerTurn();
+    startEnemyTurn();
+
 });
 
-startTurn();
-
-// startTurn();
-// endTurn();
-// startTurn();
-// endTurn();
-// startTurn();
-// endTurn();
-
-
-// console.log(hero.currentHealth);
-// console.log(cultist.strength);
-// cultist.incantation();
-// console.log(cultist.strength);
-// cultist.darkStrike();
-// console.log(hero.currentHealth);
-
-// cultist.decideAction();
-// cultist.endOfTurn();
-// cultist.decideAction();
-// cultist.endOfTurn();
-// cultist.decideAction();
-// cultist.endOfTurn();
+$(heroHealthBar).attr("value", hero.currentHealth);
+$(heroHealthBar).attr("max", hero.maxHealth);
+$(enemyHealthBar).attr("value", enemy.currentHealth);
+$(enemyHealthBar).attr("max", enemy.maxHealth);
+startPlayerTurn();
 
   
   

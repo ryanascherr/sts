@@ -7,13 +7,27 @@
     <title>Slay the Spire</title>
 </head>
 <body>
-    <h1>Hello World!</h1>
+    <section class="arena">
+        <div class="hero">
+            <img class="hero-img" src="./img/characters/ironclad.png" alt="">
+            <progress value="100" max="100"></progress>
+        </div>
+        <div class="enemies">
+            <div class="intent">
+                <img src="" alt="" class="intent-icon">
+                <span class="damage-number"></span>
+            </div>
+            <img class="enemy-img" src="./img/enemies/cultist.png" alt="">
+            <progress value="100" max="100"></progress>
+        </div>
+    </section>
+    <section class="hand">
+        
+    </section>
     <section>
-        <img style="width: 100px" src="./img/characters/ironclad.png" alt="">
         <button class="damage" data-number="6" data-energy="1">6 damage</button>
         <button class="block" data-number="5" data-energy="1">5 block</button>
         <button class="end-turn">End Turn</button>
-        <img style="width: 100px" src="./img/enemies/cultist.png" alt="">
     </section>
 
 

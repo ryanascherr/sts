@@ -2,3 +2,44 @@ body {
     background-color: black;
     color: white;
 }
+
+.arena {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+section {
+    display: flex;
+    justify-content: center;
+}
+
+.hero, .enemies {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 30px;
+}
+
+.intent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-img {
+    width: 125px;
+}
+
+.enemy-img {
+    width: 100px;
+}
+
+.card {
+    width: 100px;
+}
+
+.card:hover {
+    cursor: pointer;
+}
