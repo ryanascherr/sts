@@ -1,6 +1,5 @@
 //TODO 
 //Death
-//Max health being surpassed
 
 let cards = [
     {
@@ -25,7 +24,20 @@ let cards = [
         block: 5,
         src: "defend_ironclad.png"
     },
-]
+];
+
+class Card {
+    constructor(id, name, character, type, rarity, cost, effect, src) {
+        this.id = id;
+        this.name = name;
+        this.character = character;
+        this.type = type;
+        this.rarity = rarity;
+        this.cost = cost;
+        this.effect = effect;
+        this.src = src;
+    }
+}
 
 let turn = 1;
 let heroHealthBar = $(".hero progress");
@@ -37,6 +49,8 @@ class Character {
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
         this.block = 0;
+        this.stength = 0;
+        this.dexterity = 0;
         this.isVulnerable = false;
         this.isWeak = false;
         this.energy = 3;
@@ -139,7 +153,6 @@ class Character {
         this.dealCards();
     }
     endTurn() {
-
         this.discardCards();
     }
 }
@@ -155,7 +168,7 @@ class Enemy {
         this.declaredAction = "";
         this.intentIcon = "";
     }
-    takeDamamge(damage) {
+    takeDamage(damage) {
         if (this.isVulnerable) {
             damage = damage*1.5;
         }
@@ -201,9 +214,6 @@ class Ironclad extends Character {
 }
 
 class Cultist extends Enemy {
-    constructor(name, healthMin, healthMax) {
-        super(name, healthMin, healthMax);
-    }
     hasIncanted = false;
     decideAction() {
         if (turn == 1) {
@@ -252,9 +262,6 @@ class Cultist extends Enemy {
 }
 
 class JawWorm extends Enemy {
-    constructor(name, healthMin, healthMax) {
-        super(name, healthMin, healthMax);
-    }
     chompCounter = 0;
     thrashCounter = 0;
     bellowCounter = 0;
@@ -384,6 +391,7 @@ let hero = ironclad;
 let enemy = cultist;
 
 console.log(hero);
+console.log(jawWorm);
 
 $(document).on('click','.card',function(){
     let cardId = parseInt($(this).attr("data-id")-1);
@@ -392,7 +400,7 @@ $(document).on('click','.card',function(){
     if (hero.energy < cost) return;
     if (card.type == "Attack") {
         let damageNumber = card.damage;
-        enemy.takeDamamge(damageNumber);
+        enemy.takeDamage(damageNumber);
     }
     if (card.type == "Skill") {
         if (card.block) {
@@ -416,6 +424,20 @@ $(heroHealthBar).attr("max", hero.maxHealth);
 $(enemyHealthBar).attr("value", enemy.currentHealth);
 $(enemyHealthBar).attr("max", enemy.maxHealth);
 startPlayerTurn();
+
+class Strike_Ironclad extends Card {
+    performEffect() {
+        enemy.takeDamage(6+hero.stength);
+    }
+}
+class Defend_Ironclad extends Card {
+    performEffect() {
+        hero.gainBlock(5+hero.dexterity);
+    }
+}
+
+let strike_ironclad = new Strike_Ironclad(1, "Strike", "Ironclad", "Attack", "Common", 1, "Deal 6 damage.", "strike_ironclad.png");
+let defend_ironclad = new Defend_Ironclad(2, "Defend", "Ironclad", "Skill", "Common", 1, "Gain 5 block.", "block_ironclad.png");
 
   
   
