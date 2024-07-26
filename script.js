@@ -1,47 +1,41 @@
 //TODO 
 //Death
 
-let cards = [
-    {
-        id: 1,
-        name: "Strike",
-        class: "Ironclad",
-        type: "Attack",
-        rarity: "Basic",
-        cost: 1,
-        effect: "Deal 6 damage.",
-        damage: 6,
-        src: "strike_ironclad.png"
-    },
-    {
-        id: 2,
-        name: "Defend",
-        class: "Ironclad",
-        type: "Skill",
-        rarity: "Basic",
-        cost: 1,
-        effect: "Gain 5 block.",
-        block: 5,
-        src: "defend_ironclad.png"
-    },
-];
-
-class Card {
-    constructor(id, name, character, type, rarity, cost, effect, src) {
-        this.id = id;
-        this.name = name;
-        this.character = character;
-        this.type = type;
-        this.rarity = rarity;
-        this.cost = cost;
-        this.effect = effect;
-        this.src = src;
-    }
-}
-
-let turn = 1;
-let heroHealthBar = $(".hero progress");
-let enemyHealthBar = $(".enemies progress");
+// let cards = [
+//     {
+//         id: 1,
+//         name: "Strike",
+//         class: "Ironclad",
+//         type: "Attack",
+//         rarity: "Basic",
+//         cost: 1,
+//         effect: "Deal 6 damage.",
+//         damage: 6,
+//         src: "strike_ironclad.png"
+//     },
+//     {
+//         id: 2,
+//         name: "Defend",
+//         class: "Ironclad",
+//         type: "Skill",
+//         rarity: "Basic",
+//         cost: 1,
+//         effect: "Gain 5 block.",
+//         block: 5,
+//         src: "defend_ironclad.png"
+//     },
+//     {
+//         id: 3,
+//         name: "Defend",
+//         class: "Ironclad",
+//         type: "Skill",
+//         rarity: "Basic",
+//         cost: 1,
+//         effect: "Gain 5 block.",
+//         block: 5,
+//         src: "bash.png"
+//     },
+// ];
 
 class Character {
     constructor(name, maxHealth) {
@@ -49,10 +43,10 @@ class Character {
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
         this.block = 0;
-        this.stength = 0;
+        this.strength = 0;
         this.dexterity = 0;
-        this.isVulnerable = false;
-        this.isWeak = false;
+        this.vulnerable = 0;
+        this.weak = 0;
         this.energy = 3;
         this.isAlive = true;
         this.handSize = 5;
@@ -97,14 +91,13 @@ class Character {
         this.block += block;
         console.log(this.name + " gains " + block + " block. They have " + this.block + " block.")
     }
-    becomeVulnerable() {
-        this.isVulnerable = true;
+    applyVulnerable(number) {
+        this.vulnerable += number;
+        console.log(this.name + "has " + this.vulnerable + " vulnerable.")
     }
-    recoverVulnerable() {
-        this.isVulnerable = false;
-    }
-    becomeWeak() {
-        this.isWeak = true;
+    applyWeak(number) {
+        this.weak += number;
+        console.log(this.name + "has " + this.weak + " weak.")
     }
     recoverWeak() {
         this.isWeak = false;
@@ -121,7 +114,7 @@ class Character {
             let randomIndex = Math.floor(Math.random() * this.drawPile.length);
             let randomCardId = hero.drawPile[randomIndex];
     
-            cards.forEach(card => {
+            cardsArray.forEach(card => {
                 if (randomCardId == card.id) {
                     $(".hand").append(`<img class="card" data-id="${card.id}" src="./img/cards/${card.src}">`);
                 }
@@ -154,6 +147,8 @@ class Character {
     }
     endTurn() {
         this.discardCards();
+        this.vulnerable -= 1;
+        this.weak -= 1;
     }
 }
 
@@ -165,6 +160,8 @@ class Enemy {
         this.block = 0;
         this.strength = 0;
         this.dexterity = 0;
+        this.vulnerable = 0;
+        this.weak = 0;
         this.declaredAction = "";
         this.intentIcon = "";
     }
@@ -194,6 +191,14 @@ class Enemy {
         this.block += block;
         console.log(this.name + " gains " + block + " block. They have " + this.block + " block.")
     }
+    applyVulnerable(number) {
+        this.vulnerable += number;
+        console.log(this.name + " has " + this.vulnerable + " vulnerable.")
+    }
+    applyWeak(number) {
+        this.weak += number;
+        console.log(this.name + "has " + this.weak + " weak.")
+    }
     startTurn() {
         if (this.block != 0) {
             this.block = 0;
@@ -210,7 +215,7 @@ class Ironclad extends Character {
     constructor(name, maxHealth) {
         super(name, maxHealth);
     }
-    deck = [1, 1, 1, 1, 1, 2, 2, 2, 2];
+    deck = [1, 1, 1, 1, 1, 2, 2, 2, 2, 3];
 }
 
 class Cultist extends Enemy {
@@ -356,6 +361,54 @@ class JawWorm extends Enemy {
     }
 }
 
+let ironclad = new Ironclad("Ironclad", 70);
+let cultist = new Cultist("Cultist", 48, 54);
+let jawWorm = new JawWorm("Jaw Worm", 40, 44);
+
+let hero = ironclad;
+let enemy = cultist;
+
+class Card {
+    constructor(id, name, character, type, rarity, cost, effect, src) {
+        this.id = id;
+        this.name = name;
+        this.character = character;
+        this.type = type;
+        this.rarity = rarity;
+        this.cost = cost;
+        this.effect = effect;
+        this.src = src;
+    }
+}
+
+class Strike_Ironclad extends Card {
+    performEffect() {
+        enemy.takeDamage(6+hero.stength);
+    }
+}
+class Defend_Ironclad extends Card {
+    performEffect() {
+        hero.gainBlock(5+hero.dexterity);
+    }
+}
+class Bash extends Card {
+    performEffect() {
+        let damage = 8 + hero.strength;
+        enemy.takeDamage(damage);
+        enemy.applyVulnerable(2);
+    }
+}
+
+let strike_ironclad = new Strike_Ironclad(1, "Strike", "Ironclad", "Attack", "Common", 1, "Deal 6 damage.", "strike_ironclad.png");
+let defend_ironclad = new Defend_Ironclad(2, "Defend", "Ironclad", "Skill", "Common", 1, "Gain 5 block.", "defend_ironclad.png");
+let bash = new Bash(3, "Bash", "Ironclad", "Attack", "Common", 2, "Deal 8 damage. Apply 2 Vulnerable.", "bash.png");
+
+let cardsArray = [strike_ironclad, defend_ironclad, bash];
+
+let turn = 1;
+let heroHealthBar = $(".hero progress");
+let enemyHealthBar = $(".enemies progress");
+
 function startPlayerTurn() {
     console.log("-- Turn " + turn + " --");
     hero.startTurn();
@@ -382,35 +435,19 @@ function gameOver() {
     console.log("GAME OVER");
 }
 
-let ironclad = new Ironclad("Ironclad", 70);
-
-let cultist = new Cultist("Cultist", 48, 54);
-let jawWorm = new JawWorm("Jaw Worm", 40, 44);
-
-let hero = ironclad;
-let enemy = cultist;
-
-console.log(hero);
-console.log(jawWorm);
-
 $(document).on('click','.card',function(){
-    let cardId = parseInt($(this).attr("data-id")-1);
-    let card = cards[cardId];
-    let cost = card.cost;
-    if (hero.energy < cost) return;
-    if (card.type == "Attack") {
-        let damageNumber = card.damage;
-        enemy.takeDamage(damageNumber);
-    }
-    if (card.type == "Skill") {
-        if (card.block) {
-            let blockNumber = card.block;
-            hero.gainBlock(blockNumber);
+    let cardId = parseInt($(this).attr("data-id"));
+    let chosenCard;
+    $(cardsArray).each(function() {
+        if (this.id == cardId) {
+            chosenCard = this;
         }
-    }
+    });
+    let cost = chosenCard.cost;
+    if (hero.energy < cost) return;
     hero.energy -= cost;
-
-    hero.discardPile.push(cardId+1);
+    chosenCard.performEffect();
+    hero.discardPile.push(cardId);
     $(this).remove();
 });
 
@@ -424,20 +461,6 @@ $(heroHealthBar).attr("max", hero.maxHealth);
 $(enemyHealthBar).attr("value", enemy.currentHealth);
 $(enemyHealthBar).attr("max", enemy.maxHealth);
 startPlayerTurn();
-
-class Strike_Ironclad extends Card {
-    performEffect() {
-        enemy.takeDamage(6+hero.stength);
-    }
-}
-class Defend_Ironclad extends Card {
-    performEffect() {
-        hero.gainBlock(5+hero.dexterity);
-    }
-}
-
-let strike_ironclad = new Strike_Ironclad(1, "Strike", "Ironclad", "Attack", "Common", 1, "Deal 6 damage.", "strike_ironclad.png");
-let defend_ironclad = new Defend_Ironclad(2, "Defend", "Ironclad", "Skill", "Common", 1, "Gain 5 block.", "block_ironclad.png");
 
   
   
