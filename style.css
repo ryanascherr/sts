@@ -43,3 +43,56 @@ section {
 .card:hover {
     cursor: pointer;
 }
+
+.energy-container {
+    display: flex;
+    width: 100%;
+    position: relative;
+}
+
+.hero-energy {
+    position: absolute;
+    top: 5;
+    left: 5;
+}
+
+.hero-statuses, .enemy-statuses {
+    display: flex;
+}
+
+.hero-statuses {
+    justify-content: flex-end;
+}
+
+.hero-health, .enemy-health {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.d-none {
+    display: none;
+}
+
+.hero-shield-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hero-shield-container .block-icon {
+    width: 35px;
+}
+
+.block-container {
+    position: relative;
+}
+
+.block-container .block-number {
+    position: absolute;
+    top: 10px;
+    right: 13px;
+    font-weight: bold;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+}

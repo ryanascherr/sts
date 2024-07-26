@@ -54,8 +54,8 @@ class Character {
         this.discardPile = [];
     }
     takeDamage(damage) {
-        if (this.isVulnerable) {
-            damage = damage*1.5;
+        if (this.vulnerable != 0) {
+            damage = Math.floor(damage*1.5);
         }
         if (this.block != 0) {
             let currentBlock = this.block;
@@ -63,6 +63,10 @@ class Character {
             if (this.block < 0) {
                 this.block = 0;
             }
+            if (this.block == 0) {
+                $(".hero-shield-container .block-container").addClass("d-none");
+            }
+            $(".hero-shield-container .block-container .block-number").html(this.block);
             damage = damage - currentBlock;
             if (damage < 0) {
                 damage = 0;
@@ -74,6 +78,8 @@ class Character {
             this.isAlive = false;
         }
         heroHealthBar.attr("value", this.currentHealth);
+        $(".hero-health .current-health").html(this.currentHealth);
+        $(".hero-health .max-health").html(this.maxHealth);
         console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
 
         if (!this.isAlive) {
@@ -85,10 +91,16 @@ class Character {
         if (this.currentHealth > this.maxHealth) {
             this.currentHealth = this.maxHealth;
         }
-        return this.name + " gained " + health + " health. " + this.name + "'s current health is " + this.currentHealth + "/" + this.maxHealth + ".";
+        $(".hero-health .current-health").html(this.currentHealth);
+        $(".hero-health .max-health").html(this.maxHealth);
+        console.log(this.name + " gained " + health + " health. " + this.name + "'s current health is " + this.currentHealth + "/" + this.maxHealth + ".");
     }
     gainBlock(block) {
         this.block += block;
+        if (this.block != 0) {
+            $(".hero-shield-container .block-container").removeClass("d-none");
+            $(".hero-shield-container .block-container .block-number").html(this.block);
+        }
         console.log(this.name + " gains " + block + " block. They have " + this.block + " block.")
     }
     applyVulnerable(number) {
@@ -98,9 +110,6 @@ class Character {
     applyWeak(number) {
         this.weak += number;
         console.log(this.name + "has " + this.weak + " weak.")
-    }
-    recoverWeak() {
-        this.isWeak = false;
     }
     dies() {
         console.log(this.name + " has died. GAME OVER.");
@@ -139,16 +148,19 @@ class Character {
         if (this.block != 0) {
             this.block = 0;
             console.log(this.name + " loses all block.");
+            $(".hero-shield-container .block-container").addClass("d-none");
+            $(".hero-shield-container .block-container .block-number").html(this.block);
         }
         this.energy = 3;
+        $(".hero-energy").html(this.energy);
+        $(".hero-health .current-health").html(this.currentHealth);
+        $(".hero-health .max-health").html(this.maxHealth);
         console.log(this.name + " has " + this.energy + " energy.");
         this.drawPile = hero.deck;
         this.dealCards();
     }
     endTurn() {
         this.discardCards();
-        this.vulnerable -= 1;
-        this.weak -= 1;
     }
 }
 
@@ -166,8 +178,8 @@ class Enemy {
         this.intentIcon = "";
     }
     takeDamage(damage) {
-        if (this.isVulnerable) {
-            damage = damage*1.5;
+        if (this.vulnerable != 0) {
+            damage = Math.floor(damage*1.5);
         }
         if (this.block != 0) {
             let currentBlock = this.block;
@@ -185,6 +197,8 @@ class Enemy {
             this.currentHealth = 0;
         }
         enemyHealthBar.attr("value", this.currentHealth);
+        $(".enemy-health .current-health").html(this.currentHealth);
+        $(".enemy-health .max-health").html(this.maxHealth);
         console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
     }
     gainBlock(block) {
@@ -204,10 +218,28 @@ class Enemy {
             this.block = 0;
             console.log(this.name + " loses all block.");
         }
+        $(".enemy-health .current-health").html(this.currentHealth);
+        $(".enemy-health .max-health").html(this.maxHealth);
         this.decideAction();
         this.showIntent();
     }
-    endTurn() {
+    endTurnGeneral() {
+        if (hero.vulnerable != 0) {
+            hero.vulnerable -= 1;
+            console.log(hero.name + " has " + hero.vulnerable + " vulnerable.");
+        }
+        if (hero.weak != 0) {
+            hero.weak -= 1;
+            console.log(hero.name + " has " + hero.weak + " weak.");
+        }
+        if (this.vulnerable != 0) {
+            this.vulnerable -= 1;
+            console.log(this.name + " has " + this.vulnerable + " vulnerable.");
+        }
+        if (this.weak != 0) {
+            this.weak -= 1;
+            console.log(this.name + " has " + this.weak + " weak.");
+        }
     }
 }
 
@@ -236,6 +268,9 @@ class Cultist extends Enemy {
         }
         if (this.declaredAction == "Dark Strike") {
             let attackDamage = 6 + this.strength;
+            if (hero.vulnerable != 0) {
+                attackDamage = Math.floor(attackDamage*1.5);
+            }
             $(".enemies .intent-icon").attr("src", `./img/intents/intent_attack.png`);
             $(".enemies .damage-number").text(attackDamage);
             console.log(this.name + " intends to attack for " + attackDamage + " damage.");
@@ -258,7 +293,7 @@ class Cultist extends Enemy {
         console.log(this.name + " attacks " + hero.name + ".");
         hero.takeDamage(damage);
     }
-    endOfTurn() {
+    endTurnSpecific() {
         if (this.hasIncanted && turn != 1) {
             this.strength += 3;
             console.log(this.name + " has gained +3 strength. Strength is " + this.strength + ".");
@@ -356,7 +391,7 @@ class JawWorm extends Enemy {
         console.log(this.name + " gains + 3 strength. Strength is " + this.strength + ".");
         this.gainBlock(block);
     }
-    endOfTurn() {
+    endTurn() {
         
     }
 }
@@ -383,7 +418,7 @@ class Card {
 
 class Strike_Ironclad extends Card {
     performEffect() {
-        enemy.takeDamage(6+hero.stength);
+        enemy.takeDamage(6+hero.strength);
     }
 }
 class Defend_Ironclad extends Card {
@@ -426,7 +461,8 @@ function startEnemyTurn() {
     }
 }
 function endEnemyTurn() {
-    enemy.endOfTurn();
+    enemy.endTurnSpecific();
+    enemy.endTurnGeneral();
     turn ++;
     startPlayerTurn();
 }
@@ -446,6 +482,7 @@ $(document).on('click','.card',function(){
     let cost = chosenCard.cost;
     if (hero.energy < cost) return;
     hero.energy -= cost;
+    $(".hero-energy").html(hero.energy);
     chosenCard.performEffect();
     hero.discardPile.push(cardId);
     $(this).remove();

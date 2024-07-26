@@ -9,8 +9,22 @@
 <body>
     <section class="arena">
         <div class="hero">
-            <img class="hero-img" src="./img/characters/ironclad.png" alt="">
-            <progress value="100" max="100"></progress>
+            <div class="energy-container">
+                <img src="./img/icons/energy_ironclad.png" alt="">
+                <span class="hero-energy"></span>
+            </div>
+            <div class="hero-shield-container">
+                <img class="hero-img" src="./img/characters/ironclad.png" alt="">
+                <div class="block-container d-none">
+                    <img class="block-icon" src="./img/icons/icon_block.png" alt="">
+                    <span class="block-number"></span>
+                </div>
+            </div>
+            <div class="hero-health">
+                <progress value="100" max="100"></progress>
+                <div><span class="current-health"></span>/<span class="max-health"></span></div>
+            </div>
+            <div class="hero-statuses"></div>
         </div>
         <div class="enemies">
             <div class="intent">
@@ -18,7 +32,11 @@
                 <span class="damage-number"></span>
             </div>
             <img class="enemy-img" src="./img/enemies/cultist.png" alt="">
-            <progress value="100" max="100"></progress>
+            <div class="enemy-health">
+                <progress value="100" max="100"></progress>
+                <div><span class="current-health"></span>/<span class="max-health"></span></div>
+            </div>
+            <div class="enemy-statuses"></div>
         </div>
     </section>
     <section class="hand">
