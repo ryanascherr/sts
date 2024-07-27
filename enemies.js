@@ -47,6 +47,8 @@ class Enemy {
         $(currentMaxtHealth).html(this.maxHealth);
 
         console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
+
+        this.takeDamageSpecific(index);
     }
     gainBlock(block) {
         this.block += block;
@@ -96,6 +98,9 @@ class Enemy {
         }
     }
     endRoundSpecific() {
+
+    }
+    takeDamageSpecific() {
 
     }
 }
@@ -325,42 +330,7 @@ class RedLouse extends Enemy {
         this.stength += 3;
         console.log(this.name + " gains 3 strength. Strength is " + this.strength + ".");
     }
-    takeDamage(damage, index) {
-        if (this.vulnerable != 0) {
-            damage = Math.floor(damage*1.5);
-        }
-        if (hero.weak != 0) {
-            damage = Math.floor(damage*.75);
-        }
-        if (this.block != 0) {
-            let currentBlock = this.block;
-            this.block -= damage;
-            if (this.block < 0) {
-                this.block = 0;
-            }
-            damage = damage - currentBlock;
-            if (damage < 0) {
-                damage = 0;
-            }
-        }
-        this.currentHealth -= damage;
-        if (this.currentHealth < 0) {
-            this.currentHealth = 0;
-        }
-
-        let enemyHealthBars = $(".enemy-health progress");
-        let currentEnemyHealthBar = enemyHealthBars[index];
-        $(currentEnemyHealthBar).attr("value", this.currentHealth);
-
-        let enemyCurrentHealths = $(".enemy-health .current-health");
-        let currentCurrentHealth = enemyCurrentHealths[index];
-        $(currentCurrentHealth).html(this.currentHealth);
-
-        let enemyMaxHealths = $(".enemy-health .max-health");
-        let currentMaxtHealth = enemyMaxHealths[index];
-        $(currentMaxtHealth).html(this.maxHealth);
-
-        console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
+    takeDamageSpecific(index) {
         if (!this.hasUsedCurlUp) {
             this.curlUp(index);
         }
@@ -451,42 +421,7 @@ class GreenLouse extends Enemy {
     spitWeb() {
         hero.applyWeak(2);
     }
-    takeDamage(damage, index) {
-        if (this.vulnerable != 0) {
-            damage = Math.floor(damage*1.5);
-        }
-        if (hero.weak != 0) {
-            damage = Math.floor(damage*.75);
-        }
-        if (this.block != 0) {
-            let currentBlock = this.block;
-            this.block -= damage;
-            if (this.block < 0) {
-                this.block = 0;
-            }
-            damage = damage - currentBlock;
-            if (damage < 0) {
-                damage = 0;
-            }
-        }
-        this.currentHealth -= damage;
-        if (this.currentHealth < 0) {
-            this.currentHealth = 0;
-        }
-
-        let enemyHealthBars = $(".enemy-health progress");
-        let currentEnemyHealthBar = enemyHealthBars[index];
-        $(currentEnemyHealthBar).attr("value", this.currentHealth);
-
-        let enemyCurrentHealths = $(".enemy-health .current-health");
-        let currentCurrentHealth = enemyCurrentHealths[index];
-        $(currentCurrentHealth).html(this.currentHealth);
-
-        let enemyMaxHealths = $(".enemy-health .max-health");
-        let currentMaxtHealth = enemyMaxHealths[index];
-        $(currentMaxtHealth).html(this.maxHealth);
-
-        console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
+    takeDamageSpecific(index) {
         if (!this.hasUsedCurlUp) {
             this.curlUp(index);
         }
