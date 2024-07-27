@@ -62,6 +62,13 @@ class Enemy {
         this.weak += number;
         console.log(this.name + "has " + this.weak + " weak.")
     }
+    applyFrail(number) {
+        if (this.frail == 0) {
+            this.newFrail = true;
+        }
+        this.frail += number;
+        console.log(this.name + " has " + this.frail + " frail.")
+    }
     preTurn(index) {
         let currentEnemy = enemyArray[index];
 
@@ -95,6 +102,10 @@ class Enemy {
         if (this.weak != 0) {
             this.weak -= 1;
             console.log(this.name + " has " + this.weak + " weak.");
+        }
+        if (this.frail != 0) {
+            this.frail -= 1;
+            console.log(this.name + " has " + this.frail + " frail.");
         }
     }
     endRoundSpecific() {
@@ -688,6 +699,7 @@ let acidSlimeS = new AcidSlimeS("Acid Slime S", 8, 12);
 let louses = "louses";
 let slimes = "slimes";
 
-let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
+// let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
+let actOneEarlyEncounters = ["slimes"];
 let enemy;
 let enemyArray = [];

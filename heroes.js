@@ -64,6 +64,9 @@ class Character {
         console.log(this.name + " gained " + health + " health. " + this.name + "'s current health is " + this.currentHealth + "/" + this.maxHealth + ".");
     }
     gainBlock(block) {
+        if (this.frail != 0) {
+            block = Math.floor(block*.75);
+        }
         this.block += block;
         if (this.block != 0) {
             $(".hero-shield-container .block-container").removeClass("d-none");
@@ -159,6 +162,14 @@ class Character {
             }
             this.weak -= 1;
             console.log(this.name + " has " + this.weak + " weak.");
+        }
+        if (this.frail != 0) {
+            if (this.frail) {
+                this.newFrail = false;
+                return;
+            }
+            this.frail -= 1;
+            console.log(this.name + " has " + this.frail + " frail.");
         }
     }
 }
