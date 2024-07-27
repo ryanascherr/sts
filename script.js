@@ -51,7 +51,9 @@ function endPlayerTurn() {
     hero.endTurn();
 }
 function startEnemyTurn() {
-    enemy.startTurn();
+    $(enemyArray).each(function(index) {
+        this.startTurn(index);
+    })
     endRound();
     if (!hero.isAlive) {
         gameOver();
@@ -59,7 +61,11 @@ function startEnemyTurn() {
 }
 function endRound() {
     hero.endRoundGeneral();
-    enemy.endRoundGeneral();
+
+    $(enemyArray).each(function(index) {
+        this.endRoundGeneral(index);
+        this.endRoundSpecific(index);
+    })
     turn ++;
     startPlayerTurn();
 }
@@ -76,7 +82,12 @@ $(document).on('click','.card',function(){
     if (hero.energy < cost) return;
     hero.energy -= cost;
     $(".hero-energy").html(hero.energy);
-    chosenCard.performEffect();
+
+    let target;
+    if (enemyArray.length == 1) {
+        target = enemyArray[0];
+    }
+    chosenCard.performEffect(target);
     hero.discardPile.push(cardId);
     $(this).remove();
 });
@@ -98,21 +109,28 @@ function decideEnemy() {
                 let randomNumberTwo = getRandomNumber(2, 1);
 
                 if (randomNumberOne == 1) {
-                    enemyArray.push(redLouse);
+                    let newRedLouse = new RedLouse("Red Louse 1", 10, 15);
+                    enemyArray.push(newRedLouse);
                 } else {
-                    enemyArray.push(greenLouse);
+                    let newGreenLouse = new GreenLouse("Green Louse 1", 17, 11);
+                    enemyArray.push(newGreenLouse);
                 }
                 if (randomNumberTwo == 1) {
-                    enemyArray.push(redLouse);
+                    let newRedLouse = new RedLouse("Red Louse 2", 10, 15);
+                    enemyArray.push(newRedLouse);
                 } else {
-                    enemyArray.push(greenLouse);
+                    let newGreenLouse = new GreenLouse("Green Louse 2", 17, 11);
+                    enemyArray.push(newGreenLouse);
                 }
-            } else {
-                enemyArray.push(enemy);
+            } else if (enemy == "cultist") {
+                let newCultist = new Cultist("Cultist", 48, 54);
+                enemyArray.push(newCultist);
+            } else if (enemy == "jawWorm") {
+                let newJawWorm = new JawWorm("Jaw Worm", 40, 44);
+                enemyArray.push(newJawWorm);
             }
         }
     }
-    console.log(enemyArray);
     $(".enemies").empty();
     $(enemyArray).each(function() {
         placeEnemy(this);

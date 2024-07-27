@@ -33,7 +33,13 @@ class Enemy {
         if (this.currentHealth < 0) {
             this.currentHealth = 0;
         }
-        enemyHealthBar.attr("value", this.currentHealth);
+
+        if (enemyArray.length == 1) {
+            enemyHealthBar = $(".enemy-health progress");
+            console.log(enemyHealthBar);
+            $(enemyHealthBar).attr("value", this.currentHealth);
+        }
+        //TODO FOR MULTIPLE
         $(".enemy-health .current-health").html(this.currentHealth);
         $(".enemy-health .max-health").html(this.maxHealth);
         console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
@@ -52,35 +58,28 @@ class Enemy {
     }
     preTurn(index) {
         let currentEnemy = enemyArray[index];
+
         let enemyCurrentHealths = $(".enemy-health .current-health");
-        $(enemyCurrentHealths).each(function(){
-            $(this).html(currentEnemy.currentHealth);
-        })
+        $(enemyCurrentHealths[index]).html(currentEnemy.currentHealth);
 
         let enemyMaxHealths = $(".enemy-health .max-health");
-        $(enemyMaxHealths).each(function(){
-            $(this).html(currentEnemy.maxHealth);
-        })
+        $(enemyMaxHealths[index]).html(currentEnemy.maxHealth);
 
         let enemyIntents = $(".enemies .intent-icon");
-        $(enemyIntents).each(function() {
-            // $(this).attr("src", ``);
-        })
+        $(enemyIntents[index]).attr("src", " ");
         
         let enemyDamageNumbers = $(".enemies .damage-number");
-        $(enemyDamageNumbers).each(function() {
-            // $(this).text("");
-        })
+        $(enemyDamageNumbers[index]).html("");
         
         currentEnemy.decideAction();
         currentEnemy.showIntent(index);
     }
-    startTurn() {
+    startTurn(index) {
         if (this.block != 0) {
             this.block = 0;
             console.log(this.name + " loses all block.");
         }
-        this.performAction();
+        this.performAction(index);
     }
     endRoundGeneral() {
         if (this.vulnerable != 0) {
@@ -91,6 +90,9 @@ class Enemy {
             this.weak -= 1;
             console.log(this.name + " has " + this.weak + " weak.");
         }
+    }
+    endRoundSpecific() {
+
     }
 }
 
@@ -136,7 +138,7 @@ class Cultist extends Enemy {
     darkStrike() {
         let damage = 6 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
-        hero.takeDamage(damage);
+        hero.takeDamage(damage, this);
     }
     endRoundSpecific() {
         if (this.hasIncanted && turn != 1) {
@@ -162,7 +164,7 @@ class JawWorm extends Enemy {
 
         if (randomNumber <= 25) {
             if (this.chompCounter == 1) {
-                enemy.decideAction();
+                this.decideAction();
                 return;
             }
             this.declaredAction = "Chomp";
@@ -171,8 +173,7 @@ class JawWorm extends Enemy {
             this.bellowCounter = 0;
         } else if (randomNumber <= 55) {
             if (this.thrashCounter == 2) {
-                console.log("redoing...");
-                enemy.decideAction();
+                this.decideAction();
                 return;
             }
             this.declaredAction = "Thrash";
@@ -181,8 +182,7 @@ class JawWorm extends Enemy {
             this.bellowCounter = 0;
         } else {
             if (this.bellowCounter == 1) {
-                console.log("redoing...");
-                enemy.decideAction();
+                this.decideAction();
                 return;
             }
             this.declaredAction = "Bellow";
@@ -225,13 +225,13 @@ class JawWorm extends Enemy {
     chomp() {
         let damage = 11;
         console.log(this.name + " attacks " + hero.name + ".");
-        hero.takeDamage(damage);
+        hero.takeDamage(damage, this);
     }
     thrash() {
         let damage = 7;
         let block = 5;
         console.log(this.name + " attacks " + hero.name + ".");
-        hero.takeDamage(damage);
+        hero.takeDamage(damage, this);
         this.gainBlock(block);
     }
     bellow() {
@@ -252,21 +252,23 @@ class RedLouse extends Enemy {
     biteDamage = getRandomNumber(7, 5);
     hasUsedCurlUp = false;
     isCurlUpActive = false;
-    startTurn() {
+    startTurn(index) {
         if (this.block != 0) {
             this.block = 0;
             console.log(this.name + " loses all block.");
         }
         if (this.isCurlUpActive) {
-            $(".enemy-img").attr("src", `./img/enemies/${enemy.src}.png`);
+            let enemyImages = $(".enemy-img");
+            let currentEnemyImage = enemyImages[index];
+            $(currentEnemyImage).attr("src", `./img/enemies/${enemy.src}.png`);
         }
-        this.performAction();
+        this.performAction(index);
     }
     decideAction() {
         let randomNumber = getRandomNumber(4, 1);
         if (randomNumber != 1) {
             if (this.biteCounter == 2) {
-                enemy.decideAction();
+                this.decideAction();
                 return;
             }
             this.declaredAction = "Bite";
@@ -275,7 +277,7 @@ class RedLouse extends Enemy {
         }
         if (randomNumber == 1) {
             if (this.growCounter == 2) {
-                enemy.decideAction();
+                this.decideAction();
                 return;
             }
             this.declaredAction = "Grow";
@@ -302,18 +304,18 @@ class RedLouse extends Enemy {
             console.log(this.name + " intends to buff themselves.");
         }
     }
-    performAction() {
+    performAction(index) {
         if (this.declaredAction == "Bite") {
-            this.bite()
+            this.bite(index)
         }
         if (this.declaredAction == "Grow") {
-            this.grow();
+            this.grow(index);
         }
     }
     bite() {
         let damage = this.biteDamage + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
-        hero.takeDamage(damage);
+        hero.takeDamage(damage, this);
     }
     grow() {
         this.stength += 3;
@@ -349,8 +351,10 @@ class RedLouse extends Enemy {
             this.curlUp();
         }
     }
-    curlUp() {
-        $(".enemy-img").attr("src", `./img/enemies/louse-curl-up.png`);
+    curlUp(index) {
+        let enemyImages = $(".enemy-img");
+        let currentEnemyImage = enemyImages[index];
+        $(currentEnemyImage).attr("src", `./img/enemies/louse-curl-up.png`);
         let randomNumber = getRandomNumber(7, 3);
         this.block += randomNumber;
         this.hasUsedCurlUp = true;
@@ -372,7 +376,9 @@ class GreenLouse extends Enemy {
             console.log(this.name + " loses all block.");
         }
         if (this.isCurlUpActive) {
-            $(".enemy-img").attr("src", `./img/enemies/${enemy.src}.png`);
+            let enemyImages = $(".enemy-img");
+            let currentEnemyImage = enemyImages[index];
+            $(currentEnemyImage).attr("src", `./img/enemies/${enemy.src}.png`);
         }
         this.performAction();
     }
@@ -380,7 +386,7 @@ class GreenLouse extends Enemy {
         let randomNumber = getRandomNumber(4, 1);
         if (randomNumber != 1) {
             if (this.biteCounter == 2) {
-                enemy.decideAction();
+                this.decideAction();
                 return;
             }
             this.declaredAction = "Bite";
@@ -389,7 +395,7 @@ class GreenLouse extends Enemy {
         }
         if (randomNumber == 1) {
             if (this.spitWebCounter == 2) {
-                enemy.decideAction();
+                this.decideAction();
                 return;
             }
             this.declaredAction = "Spit Web";
@@ -415,7 +421,7 @@ class GreenLouse extends Enemy {
             console.log(this.name + " intends to debuff " + hero.name + ".");
         }
     }
-    performAction() {
+    performAction(index) {
         if (this.declaredAction == "Bite") {
             this.bite()
         }
@@ -426,7 +432,7 @@ class GreenLouse extends Enemy {
     bite() {
         let damage = this.biteDamage + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
-        hero.takeDamage(damage);
+        hero.takeDamage(damage, this);
     }
     spitWeb() {
         hero.applyWeak(2);
@@ -478,7 +484,7 @@ let greenLouse = new GreenLouse("Green Louse", 17, 11);
 
 let louses = "louses";
 
-let actOneEarlyEncounters = [louses];
+let actOneEarlyEncounters = ["louses"];
 let enemy;
 let enemyArray = [];
 // let actOneEarlyEncounters = [greenLouse];

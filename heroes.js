@@ -16,11 +16,11 @@ class Character {
         this.drawPile = [];
         this.discardPile = [];
     }
-    takeDamage(damage) {
+    takeDamage(damage, attacker) {
         if (this.vulnerable != 0) {
             damage = Math.floor(damage*1.5);
         }
-        if (enemy.weak != 0) {
+        if (attacker.weak != 0) {
             damage = Math.floor(damage*.75);
         }
         if (this.block != 0) {

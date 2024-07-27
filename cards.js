@@ -12,20 +12,20 @@ class Card {
 }
 
 class Strike_Ironclad extends Card {
-    performEffect() {
-        enemy.takeDamage(6+hero.strength);
+    performEffect(target) {
+        target.takeDamage(6+hero.strength);
     }
 }
 class Defend_Ironclad extends Card {
-    performEffect() {
+    performEffect(target) {
         hero.gainBlock(5+hero.dexterity);
     }
 }
 class Bash extends Card {
-    performEffect() {
+    performEffect(target) {
         let damage = 8 + hero.strength;
-        enemy.takeDamage(damage);
-        enemy.applyVulnerable(2);
+        target.takeDamage(damage);
+        target.applyVulnerable(2);
     }
 }
 
