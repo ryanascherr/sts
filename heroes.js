@@ -7,7 +7,9 @@ class Character {
         this.strength = 0;
         this.dexterity = 0;
         this.vulnerable = 0;
+        this.newVulnerable = false;
         this.weak = 0;
+        this.newWeak = false;
         this.energy = 3;
         this.isAlive = true;
         this.handSize = 5;
@@ -17,6 +19,9 @@ class Character {
     takeDamage(damage) {
         if (this.vulnerable != 0) {
             damage = Math.floor(damage*1.5);
+        }
+        if (enemy.weak != 0) {
+            damage = Math.floor(damage*.75);
         }
         if (this.block != 0) {
             let currentBlock = this.block;
@@ -65,12 +70,18 @@ class Character {
         console.log(this.name + " gains " + block + " block. They have " + this.block + " block.")
     }
     applyVulnerable(number) {
+        if (this.vulnerable == 0) {
+            this.newVulnerable = true;
+        }
         this.vulnerable += number;
         console.log(this.name + "has " + this.vulnerable + " vulnerable.")
     }
     applyWeak(number) {
+        if (this.vulnerable == 0) {
+            this.newWeak = true;
+        }
         this.weak += number;
-        console.log(this.name + "has " + this.weak + " weak.")
+        console.log(this.name + " has " + this.weak + " weak.")
     }
     dies() {
         console.log(this.name + " has died. GAME OVER.");
@@ -125,10 +136,18 @@ class Character {
     }
     endRoundGeneral() {
         if (this.vulnerable != 0) {
+            if (this.newVulnerable) {
+                this.newVulnerable = false;
+                return;
+            }
             this.vulnerable -= 1;
             console.log(this.name + " has " + this.vulnerable + " vulnerable.");
         }
         if (this.weak != 0) {
+            if (this.newWeak) {
+                this.newWeak = false;
+                return;
+            }
             this.weak -= 1;
             console.log(this.name + " has " + this.weak + " weak.");
         }

@@ -5,7 +5,6 @@
 let act = 1;
 let floor = 1;
 let turn;
-
 let hero = ironclad;
 let enemy;
 
@@ -80,7 +79,8 @@ $(".js_end-turn").click(function() {
 function decideEnemy() {
     if (act == 1) {
         if (floor <= 3) {
-            let randomNumber = Math.floor(Math.random() * (2 - 1 + 1) + 1);
+            let numberOfEncounters = actOneEarlyEncounters.length;
+            let randomNumber = getRandomNumber(numberOfEncounters, 1);
             enemy = actOneEarlyEncounters[randomNumber-1];
         }
     }

@@ -1,7 +1,7 @@
 class Enemy {
     constructor(name, healthMin, healthMax) {
         this.name = name;
-        this.maxHealth = Math.floor(Math.random() * (healthMax - healthMin + 1) + healthMin);
+        this.maxHealth = getRandomNumber(healthMax, healthMin);
         this.currentHealth = this.maxHealth;
         this.block = 0;
         this.strength = 0;
@@ -14,6 +14,9 @@ class Enemy {
     takeDamage(damage) {
         if (this.vulnerable != 0) {
             damage = Math.floor(damage*1.5);
+        }
+        if (hero.weak != 0) {
+            damage = Math.floor(damage*.75);
         }
         if (this.block != 0) {
             let currentBlock = this.block;
@@ -121,7 +124,7 @@ class Cultist extends Enemy {
     endRoundSpecific() {
         if (this.hasIncanted && turn != 1) {
             this.strength += 3;
-            console.log(this.name + " has gained +3 strength. Strength is " + this.strength + ".");
+            console.log(this.name + " has gained 3 strength. Strength is " + this.strength + ".");
         }
     }
 }
@@ -138,7 +141,7 @@ class JawWorm extends Enemy {
             return;
         }
 
-        let randomNumber = Math.floor(Math.random() * (100 - 1 + 1) + 1);
+        let randomNumber = getRandomNumber(100, 1);
 
         if (randomNumber <= 25) {
             if (this.chompCounter == 1) {
@@ -217,7 +220,7 @@ class JawWorm extends Enemy {
     bellow() {
         this.strength += 3;
         let block = 6;
-        console.log(this.name + " gains + 3 strength. Strength is " + this.strength + ".");
+        console.log(this.name + " gains 3 strength. Strength is " + this.strength + ".");
         this.gainBlock(block);
     }
     endTurnSpecific() {
@@ -225,7 +228,225 @@ class JawWorm extends Enemy {
     }
 }
 
+class RedLouse extends Enemy {
+    src = "red_louse";
+    biteCounter = 0;
+    growCounter = 0;
+    biteDamage = getRandomNumber(7, 5);
+    hasUsedCurlUp = false;
+    isCurlUpActive = false;
+    startTurn() {
+        if (this.block != 0) {
+            this.block = 0;
+            console.log(this.name + " loses all block.");
+        }
+        if (this.isCurlUpActive) {
+            $(".enemy-img").attr("src", `./img/enemies/${enemy.src}.png`);
+        }
+        this.performAction();
+    }
+    decideAction() {
+        let randomNumber = getRandomNumber(4, 1);
+        if (randomNumber != 1) {
+            if (this.biteCounter == 2) {
+                enemy.decideAction();
+                return;
+            }
+            this.declaredAction = "Bite";
+            this.biteCounter++;
+            this.growCounter = 0;
+        }
+        if (randomNumber == 1) {
+            if (this.growCounter == 2) {
+                enemy.decideAction();
+                return;
+            }
+            this.declaredAction = "Grow";
+            this.growCounter++;
+            this.biteCounter = 0;
+        }
+    }
+    showIntent() {
+        if (this.declaredAction == "Bite") {
+            let attackDamage = this.biteDamage + this.strength;
+            $(".enemies .intent-icon").attr("src", `./img/intents/intent_attack.png`);
+            $(".enemies .damage-number").text(attackDamage);
+            console.log(this.name + " intends to attack for " + attackDamage + " damage.");
+        }
+        if (this.declaredAction == "Grow") {
+            $(".enemies .intent-icon").attr("src", `./img/intents/intent_buff.png`);
+            console.log(this.name + " intends to buff themselves.");
+        }
+    }
+    performAction() {
+        if (this.declaredAction == "Bite") {
+            this.bite()
+        }
+        if (this.declaredAction == "Grow") {
+            this.grow();
+        }
+    }
+    bite() {
+        let damage = this.biteDamage + this.strength;
+        console.log(this.name + " attacks " + hero.name + ".");
+        hero.takeDamage(damage);
+    }
+    grow() {
+        this.stength += 3;
+        console.log(this.name + " gains 3 strength. Strength is " + this.strength + ".");
+    }
+    takeDamage(damage) {
+        if (this.vulnerable != 0) {
+            damage = Math.floor(damage*1.5);
+        }
+        if (hero.weak != 0) {
+            damage = Math.floor(damage*.75);
+        }
+        if (this.block != 0) {
+            let currentBlock = this.block;
+            this.block -= damage;
+            if (this.block < 0) {
+                this.block = 0;
+            }
+            damage = damage - currentBlock;
+            if (damage < 0) {
+                damage = 0;
+            }
+        }
+        this.currentHealth -= damage;
+        if (this.currentHealth < 0) {
+            this.currentHealth = 0;
+        }
+        enemyHealthBar.attr("value", this.currentHealth);
+        $(".enemy-health .current-health").html(this.currentHealth);
+        $(".enemy-health .max-health").html(this.maxHealth);
+        console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
+        if (!this.hasUsedCurlUp) {
+            this.curlUp();
+        }
+    }
+    curlUp() {
+        $(".enemy-img").attr("src", `./img/enemies/louse-curl-up.png`);
+        let randomNumber = getRandomNumber(7, 3);
+        this.block += randomNumber;
+        this.hasUsedCurlUp = true;
+        this.isCurlUpActive = true;
+        console.log(this.name + " curled up and gained " + randomNumber + " block.");
+    }
+}
+
+class GreenLouse extends Enemy {
+    src = "green_louse";
+    biteCounter = 0;
+    spitWebCounter = 0;
+    biteDamage = getRandomNumber(7, 5);
+    hasUsedCurlUp = false;
+    isCurlUpActive = false;
+    startTurn() {
+        if (this.block != 0) {
+            this.block = 0;
+            console.log(this.name + " loses all block.");
+        }
+        if (this.isCurlUpActive) {
+            $(".enemy-img").attr("src", `./img/enemies/${enemy.src}.png`);
+        }
+        this.performAction();
+    }
+    decideAction() {
+        let randomNumber = getRandomNumber(4, 1);
+        if (randomNumber != 1) {
+            if (this.biteCounter == 2) {
+                enemy.decideAction();
+                return;
+            }
+            this.declaredAction = "Bite";
+            this.biteCounter++;
+            this.spitWebCounter = 0;
+        }
+        if (randomNumber == 1) {
+            if (this.spitWebCounter == 2) {
+                enemy.decideAction();
+                return;
+            }
+            this.declaredAction = "Spit Web";
+            this.spitWebCounter++;
+            this.biteCounter = 0;
+        }
+    }
+    showIntent() {
+        if (this.declaredAction == "Bite") {
+            let attackDamage = this.biteDamage + this.strength;
+            $(".enemies .intent-icon").attr("src", `./img/intents/intent_attack.png`);
+            $(".enemies .damage-number").text(attackDamage);
+            console.log(this.name + " intends to attack for " + attackDamage + " damage.");
+        }
+        if (this.declaredAction == "Spit Web") {
+            $(".enemies .intent-icon").attr("src", `./img/intents/intent_debuff.png`);
+            console.log(this.name + " intends to debuff " + hero.name + ".");
+        }
+    }
+    performAction() {
+        if (this.declaredAction == "Bite") {
+            this.bite()
+        }
+        if (this.declaredAction == "Spit Web") {
+            this.spitWeb();
+        }
+    }
+    bite() {
+        let damage = this.biteDamage + this.strength;
+        console.log(this.name + " attacks " + hero.name + ".");
+        hero.takeDamage(damage);
+    }
+    spitWeb() {
+        hero.applyWeak(2);
+    }
+    takeDamage(damage) {
+        if (this.vulnerable != 0) {
+            damage = Math.floor(damage*1.5);
+        }
+        if (hero.weak != 0) {
+            damage = Math.floor(damage*.75);
+        }
+        if (this.block != 0) {
+            let currentBlock = this.block;
+            this.block -= damage;
+            if (this.block < 0) {
+                this.block = 0;
+            }
+            damage = damage - currentBlock;
+            if (damage < 0) {
+                damage = 0;
+            }
+        }
+        this.currentHealth -= damage;
+        if (this.currentHealth < 0) {
+            this.currentHealth = 0;
+        }
+        enemyHealthBar.attr("value", this.currentHealth);
+        $(".enemy-health .current-health").html(this.currentHealth);
+        $(".enemy-health .max-health").html(this.maxHealth);
+        console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
+        if (!this.hasUsedCurlUp) {
+            this.curlUp();
+        }
+    }
+    curlUp() {
+        $(".enemy-img").attr("src", `./img/enemies/louse-curl-up.png`);
+        let randomNumber = getRandomNumber(7, 3);
+        this.block += randomNumber;
+        this.hasUsedCurlUp = true;
+        this.isCurlUpActive = true;
+        console.log(this.name + " curled up and gained " + randomNumber + " block.");
+    }
+}
+
 let cultist = new Cultist("Cultist", 48, 54);
 let jawWorm = new JawWorm("Jaw Worm", 40, 44);
+let redLouse = new RedLouse("Red Louse", 10, 15);
+let greenLouse = new GreenLouse("Green Louse", 17, 11);
 
-let actOneEarlyEncounters = [cultist, jawWorm];
+console.log(redLouse);
+
+// let actOneEarlyEncounters = [cultist, jawWorm, redLouse];
+let actOneEarlyEncounters = [greenLouse];
