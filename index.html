@@ -7,7 +7,7 @@
     <title>Slay the Spire</title>
 </head>
 <body>
-    <section class="arena">
+    <section class="arena d-none">
         <div class="hero">
             <div class="energy-container">
                 <img src="./img/icons/energy_ironclad.png" alt="">
@@ -31,7 +31,7 @@
                 <img src="" alt="" class="intent-icon">
                 <span class="damage-number"></span>
             </div>
-            <img class="enemy-img" src="./img/enemies/jaw_worm.png" alt="">
+            <img class="enemy-img" src="" alt="">
             <div class="enemy-health">
                 <progress value="100" max="100"></progress>
                 <div><span class="current-health"></span>/<span class="max-health"></span></div>
@@ -39,16 +39,20 @@
             <div class="enemy-statuses"></div>
         </div>
     </section>
-    <section class="hand">
-        
+    <section class="hand d-none">
     </section>
-    <section>
-        <button class="end-turn">End Turn</button>
+    <section class="end-turn-container d-none">
+        <button class="js_end-turn m-3">End Turn</button>
     </section>
+    <div class="map">
+        <button class="js_start-fight">Floor 1</button>
+    </div>
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="./cards.js"></script>
+    <script src="./heroes.js"></script>
+    <script src="./enemies.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>
