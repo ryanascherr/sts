@@ -444,6 +444,151 @@ class AcidSlimeM extends Enemy {
     corrosiveSpitCounter = 0;
     lickCounter = 0;
     tackleCounter = 0;
+    decideAction() {
+        let randomNumber = getRandomNumber(100, 1);
+
+        if (randomNumber <= 30) {
+            if (this.corrosiveSpitCounter == 2) {
+                this.decideAction();
+                return;
+            }
+            this.declaredAction = "Corrosive Spit";
+            this.corrosiveSpitCounter++;
+            this.lickCounter = 0;
+            this.tackleCounter = 0;
+        } else if (randomNumber <= 70) {
+            if (this.lickCounter == 1) {
+                this.decideAction();
+                return;
+            }
+            this.declaredAction = "Lick";
+            this.lickCounter++;
+            this.corrosiveSpitCounter = 0;
+            this.tackleCounter = 0;
+        } else {
+            if (this.tackleCounter == 1) {
+                this.decideAction();
+                return;
+            }
+            this.declaredAction = "Tackle";
+            this.tackleCounter++;
+            this.corrosiveSpitCounter = 0;
+            this.lickCounter = 0;
+        }
+    }
+    showIntent(index) {
+        let enemyIntents = $(".enemies .intent-icon");
+        let currentIntentTarget = enemyIntents[index];
+        let enemyDamageNumbers = $(".enemies .damage-number");
+        let currentDamageNumberTarget = enemyDamageNumbers[index];
+
+        if (this.declaredAction == "Corrosive Spit") {
+            let attackDamage = 7 + this.strength;
+            $(currentIntentTarget).attr("src", `./img/intents/intent_attack-debuff.png`);
+            $(currentDamageNumberTarget).text(attackDamage);
+            console.log(this.name + " intends to attack for " + attackDamage + " damage.");
+            //add card to discard
+        }
+        if (this.declaredAction == "Lick") {
+            $(currentIntentTarget).attr("src", `./img/intents/intent_debuff.png`);
+            console.log(this.name + " intends to debuff " + hero.name + ".");
+        }
+        if (this.declaredAction == "Tackle") {
+            let attackDamage = 10 + this.strength;
+            $(currentIntentTarget).attr("src", `./img/intents/intent_big-attack.png`);
+            $(currentDamageNumberTarget).text(attackDamage);
+            console.log(this.name + " intends to attack for " + attackDamage + " damage.");
+        }
+    }
+    performAction(index) {
+        if (this.declaredAction == "Corrosive Spit") {
+            this.corrosiveSpit()
+        }
+        if (this.declaredAction == "Lick") {
+            this.lick();
+        }
+        if (this.declaredAction == "Tackle") {
+            this.tackle();
+        }
+    }
+    corrosiveSpit() {
+        let damage = 7 + this.strength;
+        //add slimed
+        console.log(this.name + " attacks " + hero.name + ".");
+        hero.takeDamage(damage, this);
+    }
+    lick() {
+        hero.applyWeak(1);
+    }
+    tackle() {
+        let damage = 10 + this.strength;
+        console.log(this.name + " attacks " + hero.name + ".");
+        hero.takeDamage(damage, this);
+    }
+}
+
+class AcidSlimeS extends Enemy {
+    src = "acid_slime-s";
+    lickCounter = 0;
+    tackleCounter = 0;
+    decideAction() {
+        if (turn == 1) {
+            let randomNumber = getRandomNumber(2, 1);
+            if (randomNumber == 1) {
+                this.declaredAction = "Lick";
+                this.lickCounter++;
+                this.tackleCounter = 0;
+            }
+            if (randomNumber == 2) {
+                this.declaredAction = "Tackle";
+                this.tackleCounter++;
+                this.lickCounter = 0;
+            }
+        } else {
+            if (this.tackleCounter == 1) {
+                this.declaredAction = "Lick";
+                this.lickCounter++;
+                this.tackleCounter = 0;
+            } else if (this.lickCounter == 1) {
+                this.declaredAction = "Tackle";
+                this.tackleCounter++;
+                this.lickCounter = 0;
+            }
+        }
+    }
+    showIntent(index) {
+        let enemyIntents = $(".enemies .intent-icon");
+        let currentIntentTarget = enemyIntents[index];
+        let enemyDamageNumbers = $(".enemies .damage-number");
+        let currentDamageNumberTarget = enemyDamageNumbers[index];
+
+        if (this.declaredAction == "Lick") {
+            $(currentIntentTarget).attr("src", `./img/intents/intent_debuff.png`);
+            console.log(this.name + " intends to debuff " + hero.name + ".");
+        }
+        if (this.declaredAction == "Tackle") {
+            let attackDamage = 3 + this.strength;
+            $(currentIntentTarget).attr("src", `./img/intents/intent_small-attack.png`);
+            $(currentDamageNumberTarget).text(attackDamage);
+            console.log(this.name + " intends to attack for " + attackDamage + " damage.");
+        }
+    }
+    performAction(index) {
+        if (this.declaredAction == "Lick") {
+            this.lick();
+        }
+        if (this.declaredAction == "Tackle") {
+            this.tackle();
+        }
+    }
+    lick() {
+        hero.applyWeak(1);
+    }
+    tackle() {
+        let damage = 3 + this.strength;
+        console.log(this.name + " attacks " + hero.name + ".");
+        hero.takeDamage(damage, this);
+    }
 }
 
 let cultist = new Cultist("Cultist", 48, 54);
@@ -451,8 +596,10 @@ let jawWorm = new JawWorm("Jaw Worm", 40, 44);
 let redLouse = new RedLouse("Red Louse", 10, 15);
 let greenLouse = new GreenLouse("Green Louse", 11, 17);
 let acidSlimeM = new AcidSlimeM("Acid Slime M", 28, 32);
+let acidSlimeS = new AcidSlimeS("Acid Slime S", 8, 12);
 let louses = "louses";
+let slimes = "slimes";
 
-let actOneEarlyEncounters = ["louses"];
+let actOneEarlyEncounters = ["slime"];
 let enemy;
 let enemyArray = [];

@@ -1,7 +1,7 @@
 //TODO 
 //Death
 //cards array thing
-//can click multiple cards in a row
+//startTurnSpecific
 
 let act = 1;
 let floor = 1;
@@ -155,8 +155,8 @@ function decideEnemy() {
                 let newJawWorm = new JawWorm("Jaw Worm", 40, 44);
                 enemyArray.push(newJawWorm);
             } else if (enemy == "slime") {
-                let newAcidSlimeM = new AcidSlimeM("Acid Slime M", 28, 32);
-                enemyArray.push(newAcidSlimeM);
+                let newAcidSlimeS = new AcidSlimeS("Acid Slime S", 28, 32);
+                enemyArray.push(newAcidSlimeS);
             }
         }
     }
