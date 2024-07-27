@@ -159,3 +159,11 @@ button:hover {
 .p-5 {
     padding: 30px;
 }
+
+.highlight {
+    border: 2px solid yellow;
+}
+
+.enemy-img.highlight:hover {
+    cursor: pointer;
+}

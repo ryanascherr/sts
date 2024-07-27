@@ -11,7 +11,7 @@ class Enemy {
         this.declaredAction = "";
         this.intentIcon = "";
     }
-    takeDamage(damage) {
+    takeDamage(damage, index) {
         if (this.vulnerable != 0) {
             damage = Math.floor(damage*1.5);
         }
@@ -34,14 +34,18 @@ class Enemy {
             this.currentHealth = 0;
         }
 
-        if (enemyArray.length == 1) {
-            enemyHealthBar = $(".enemy-health progress");
-            console.log(enemyHealthBar);
-            $(enemyHealthBar).attr("value", this.currentHealth);
-        }
-        //TODO FOR MULTIPLE
-        $(".enemy-health .current-health").html(this.currentHealth);
-        $(".enemy-health .max-health").html(this.maxHealth);
+        let enemyHealthBars = $(".enemy-health progress");
+        let currentEnemyHealthBar = enemyHealthBars[index];
+        $(currentEnemyHealthBar).attr("value", this.currentHealth);
+
+        let enemyCurrentHealths = $(".enemy-health .current-health");
+        let currentCurrentHealth = enemyCurrentHealths[index];
+        $(currentCurrentHealth).html(this.currentHealth);
+
+        let enemyMaxHealths = $(".enemy-health .max-health");
+        let currentMaxtHealth = enemyMaxHealths[index];
+        $(currentMaxtHealth).html(this.maxHealth);
+
         console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
     }
     gainBlock(block) {
@@ -223,13 +227,13 @@ class JawWorm extends Enemy {
         }
     }
     chomp() {
-        let damage = 11;
+        let damage = 11 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
         hero.takeDamage(damage, this);
     }
     thrash() {
-        let damage = 7;
-        let block = 5;
+        let damage = 7 + this.strength;
+        let block = 5 + this.dexterity;
         console.log(this.name + " attacks " + hero.name + ".");
         hero.takeDamage(damage, this);
         this.gainBlock(block);
@@ -260,7 +264,7 @@ class RedLouse extends Enemy {
         if (this.isCurlUpActive) {
             let enemyImages = $(".enemy-img");
             let currentEnemyImage = enemyImages[index];
-            $(currentEnemyImage).attr("src", `./img/enemies/${enemy.src}.png`);
+            $(currentEnemyImage).attr("src", `./img/enemies/${this.src}.png`);
         }
         this.performAction(index);
     }
@@ -321,7 +325,7 @@ class RedLouse extends Enemy {
         this.stength += 3;
         console.log(this.name + " gains 3 strength. Strength is " + this.strength + ".");
     }
-    takeDamage(damage) {
+    takeDamage(damage, index) {
         if (this.vulnerable != 0) {
             damage = Math.floor(damage*1.5);
         }
@@ -343,12 +347,22 @@ class RedLouse extends Enemy {
         if (this.currentHealth < 0) {
             this.currentHealth = 0;
         }
-        enemyHealthBar.attr("value", this.currentHealth);
-        $(".enemy-health .current-health").html(this.currentHealth);
-        $(".enemy-health .max-health").html(this.maxHealth);
+
+        let enemyHealthBars = $(".enemy-health progress");
+        let currentEnemyHealthBar = enemyHealthBars[index];
+        $(currentEnemyHealthBar).attr("value", this.currentHealth);
+
+        let enemyCurrentHealths = $(".enemy-health .current-health");
+        let currentCurrentHealth = enemyCurrentHealths[index];
+        $(currentCurrentHealth).html(this.currentHealth);
+
+        let enemyMaxHealths = $(".enemy-health .max-health");
+        let currentMaxtHealth = enemyMaxHealths[index];
+        $(currentMaxtHealth).html(this.maxHealth);
+
         console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
         if (!this.hasUsedCurlUp) {
-            this.curlUp();
+            this.curlUp(index);
         }
     }
     curlUp(index) {
@@ -370,7 +384,7 @@ class GreenLouse extends Enemy {
     biteDamage = getRandomNumber(7, 5);
     hasUsedCurlUp = false;
     isCurlUpActive = false;
-    startTurn() {
+    startTurn(index) {
         if (this.block != 0) {
             this.block = 0;
             console.log(this.name + " loses all block.");
@@ -378,7 +392,7 @@ class GreenLouse extends Enemy {
         if (this.isCurlUpActive) {
             let enemyImages = $(".enemy-img");
             let currentEnemyImage = enemyImages[index];
-            $(currentEnemyImage).attr("src", `./img/enemies/${enemy.src}.png`);
+            $(currentEnemyImage).attr("src", `./img/enemies/${this.src}.png`);
         }
         this.performAction();
     }
@@ -437,7 +451,7 @@ class GreenLouse extends Enemy {
     spitWeb() {
         hero.applyWeak(2);
     }
-    takeDamage(damage) {
+    takeDamage(damage, index) {
         if (this.vulnerable != 0) {
             damage = Math.floor(damage*1.5);
         }
@@ -459,16 +473,28 @@ class GreenLouse extends Enemy {
         if (this.currentHealth < 0) {
             this.currentHealth = 0;
         }
-        enemyHealthBar.attr("value", this.currentHealth);
-        $(".enemy-health .current-health").html(this.currentHealth);
-        $(".enemy-health .max-health").html(this.maxHealth);
+
+        let enemyHealthBars = $(".enemy-health progress");
+        let currentEnemyHealthBar = enemyHealthBars[index];
+        $(currentEnemyHealthBar).attr("value", this.currentHealth);
+
+        let enemyCurrentHealths = $(".enemy-health .current-health");
+        let currentCurrentHealth = enemyCurrentHealths[index];
+        $(currentCurrentHealth).html(this.currentHealth);
+
+        let enemyMaxHealths = $(".enemy-health .max-health");
+        let currentMaxtHealth = enemyMaxHealths[index];
+        $(currentMaxtHealth).html(this.maxHealth);
+
         console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
         if (!this.hasUsedCurlUp) {
-            this.curlUp();
+            this.curlUp(index);
         }
     }
-    curlUp() {
-        $(".enemy-img").attr("src", `./img/enemies/louse-curl-up.png`);
+    curlUp(index) {
+        let enemyImages = $(".enemy-img");
+        let currentEnemyImage = enemyImages[index];
+        $(currentEnemyImage).attr("src", `./img/enemies/louse-curl-up.png`);
         let randomNumber = getRandomNumber(7, 3);
         this.block += randomNumber;
         this.hasUsedCurlUp = true;
@@ -484,7 +510,6 @@ let greenLouse = new GreenLouse("Green Louse", 17, 11);
 
 let louses = "louses";
 
-let actOneEarlyEncounters = ["louses"];
+let actOneEarlyEncounters = ["cultist", "jawWorm", "louses"];
 let enemy;
 let enemyArray = [];
-// let actOneEarlyEncounters = [greenLouse];

@@ -71,6 +71,7 @@ function endRound() {
 }
 
 $(document).on('click','.card',function(){
+    let cardClicked = this;
     let cardId = parseInt($(this).attr("data-id"));
     let chosenCard;
     $(cardsArray).each(function() {
@@ -80,17 +81,41 @@ $(document).on('click','.card',function(){
     });
     let cost = chosenCard.cost;
     if (hero.energy < cost) return;
-    hero.energy -= cost;
-    $(".hero-energy").html(hero.energy);
 
     let target;
-    if (enemyArray.length == 1) {
-        target = enemyArray[0];
+    if (chosenCard.type == "Attack") {
+        if (enemyArray.length == 1) {
+            target = enemyArray[0];
+            chosenCard.performEffect(target, 0);
+            hero.discardPile.push(cardId);
+            hero.energy -= cost;
+            $(".hero-energy").html(hero.energy);
+        } else {
+            highlightEnemies(cardId);
+        }
+    } else {
+        chosenCard.performEffect(target);
+        hero.discardPile.push(cardId);
+        hero.energy -= cost;
+        $(".hero-energy").html(hero.energy);
     }
-    chosenCard.performEffect(target);
-    hero.discardPile.push(cardId);
-    $(this).remove();
+
+    $(cardClicked).remove();
 });
+
+$(document).on('click','.enemy-img.highlight',function(){
+    let cardId = $(this).attr("data-id");
+    let enemyIndex = $(this).attr("data-index");
+    let targetedEnemy = enemyArray[enemyIndex];
+    $(newCardArray).each(function() {
+        if (this.id == cardId) {
+            this.performEffect(targetedEnemy, enemyIndex);
+            hero.energy -= this.cost;
+            $(".hero-energy").html(hero.energy);
+            unhighlightEnemies();
+        }
+    })
+})
 
 $(".js_end-turn").click(function() {
     endPlayerTurn();
@@ -132,19 +157,19 @@ function decideEnemy() {
         }
     }
     $(".enemies").empty();
-    $(enemyArray).each(function() {
-        placeEnemy(this);
+    $(enemyArray).each(function(index) {
+        placeEnemy(this, index);
     });
 }
 
-function placeEnemy(currentEnemy) {
+function placeEnemy(currentEnemy, index) {
     $(".enemies").append(`
-        <div class="one-enemy">
+        <div class="one-enemy" data-index=${index}>
             <div class="intent">
                 <img src="" alt="" class="intent-icon">
                 <span class="damage-number"></span>
             </div>
-            <img class="enemy-img" src="./img/enemies/${currentEnemy.src}.png" alt="">
+            <img class="enemy-img" data-index="${index}" src="./img/enemies/${currentEnemy.src}.png" alt="">
             <div class="enemy-health">
                 <progress value="100" max="100"></progress>
                 <div><span class="current-health"></span>/<span class="max-health"></span></div>
@@ -152,6 +177,16 @@ function placeEnemy(currentEnemy) {
             <div class="enemy-statuses"></div>   
         </div> 
     `)
+}
+
+function highlightEnemies(cardId) {
+    $(".enemy-img").addClass("highlight");
+    $(".enemy-img").attr("data-id", cardId);
+}
+
+function unhighlightEnemies() {
+    $(".enemy-img").removeClass("highlight");
+    $(".enemy-img").attr("data-id", "");
 }
 
   

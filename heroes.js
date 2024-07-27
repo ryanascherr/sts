@@ -17,6 +17,8 @@ class Character {
         this.discardPile = [];
     }
     takeDamage(damage, attacker) {
+        console.log(attacker);
+        console.log(damage);
         if (this.vulnerable != 0) {
             damage = Math.floor(damage*1.5);
         }
