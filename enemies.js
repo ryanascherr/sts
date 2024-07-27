@@ -50,13 +50,30 @@ class Enemy {
         this.weak += number;
         console.log(this.name + "has " + this.weak + " weak.")
     }
-    preTurn() {
-        $(".enemy-health .current-health").html(this.currentHealth);
-        $(".enemy-health .max-health").html(this.maxHealth);
-        $(".enemies .intent-icon").attr("src", ``);
-        $(".enemies .damage-number").text("");
-        this.decideAction();
-        this.showIntent();
+    preTurn(index) {
+        let currentEnemy = enemyArray[index];
+        let enemyCurrentHealths = $(".enemy-health .current-health");
+        $(enemyCurrentHealths).each(function(){
+            $(this).html(currentEnemy.currentHealth);
+        })
+
+        let enemyMaxHealths = $(".enemy-health .max-health");
+        $(enemyMaxHealths).each(function(){
+            $(this).html(currentEnemy.maxHealth);
+        })
+
+        let enemyIntents = $(".enemies .intent-icon");
+        $(enemyIntents).each(function() {
+            // $(this).attr("src", ``);
+        })
+        
+        let enemyDamageNumbers = $(".enemies .damage-number");
+        $(enemyDamageNumbers).each(function() {
+            // $(this).text("");
+        })
+        
+        currentEnemy.decideAction();
+        currentEnemy.showIntent(index);
     }
     startTurn() {
         if (this.block != 0) {
@@ -266,15 +283,22 @@ class RedLouse extends Enemy {
             this.biteCounter = 0;
         }
     }
-    showIntent() {
+    showIntent(index) {
+
+        let enemyIntents = $(".enemies .intent-icon");
+        let currentIntentTarget = enemyIntents[index];
+        let enemyDamageNumbers = $(".enemies .damage-number");
+        let currentDamageNumberTarget = enemyDamageNumbers[index];
+
         if (this.declaredAction == "Bite") {
             let attackDamage = this.biteDamage + this.strength;
-            $(".enemies .intent-icon").attr("src", `./img/intents/intent_attack.png`);
-            $(".enemies .damage-number").text(attackDamage);
+            $(currentIntentTarget).attr("src", `./img/intents/intent_attack.png`);
+
+            $(currentDamageNumberTarget).text(attackDamage);
             console.log(this.name + " intends to attack for " + attackDamage + " damage.");
         }
         if (this.declaredAction == "Grow") {
-            $(".enemies .intent-icon").attr("src", `./img/intents/intent_buff.png`);
+            $(currentIntentTarget).attr("src", `./img/intents/intent_buff.png`);
             console.log(this.name + " intends to buff themselves.");
         }
     }
@@ -373,15 +397,21 @@ class GreenLouse extends Enemy {
             this.biteCounter = 0;
         }
     }
-    showIntent() {
+    showIntent(index) {
+
+        let enemyIntents = $(".enemies .intent-icon");
+        let currentIntentTarget = enemyIntents[index];
+        let enemyDamageNumbers = $(".enemies .damage-number");
+        let currentDamageNumberTarget = enemyDamageNumbers[index];
+
         if (this.declaredAction == "Bite") {
             let attackDamage = this.biteDamage + this.strength;
-            $(".enemies .intent-icon").attr("src", `./img/intents/intent_attack.png`);
-            $(".enemies .damage-number").text(attackDamage);
+            $(currentIntentTarget).attr("src", `./img/intents/intent_attack.png`);
+            $(currentDamageNumberTarget).text(attackDamage);
             console.log(this.name + " intends to attack for " + attackDamage + " damage.");
         }
         if (this.declaredAction == "Spit Web") {
-            $(".enemies .intent-icon").attr("src", `./img/intents/intent_debuff.png`);
+            $(currentIntentTarget).attr("src", `./img/intents/intent_debuff.png`);
             console.log(this.name + " intends to debuff " + hero.name + ".");
         }
     }
@@ -446,7 +476,9 @@ let jawWorm = new JawWorm("Jaw Worm", 40, 44);
 let redLouse = new RedLouse("Red Louse", 10, 15);
 let greenLouse = new GreenLouse("Green Louse", 17, 11);
 
-console.log(redLouse);
+let louses = "louses";
 
-// let actOneEarlyEncounters = [cultist, jawWorm, redLouse];
-let actOneEarlyEncounters = [greenLouse];
+let actOneEarlyEncounters = [louses];
+let enemy;
+let enemyArray = [];
+// let actOneEarlyEncounters = [greenLouse];

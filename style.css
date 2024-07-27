@@ -14,12 +14,23 @@ section {
     justify-content: center;
 }
 
-.hero, .enemies {
+.hero, .one-enemy {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     padding: 30px;
+}
+
+.one-enemy {
+    margin: 10px;
+    padding: 5px;
+}
+
+.enemies {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .intent {

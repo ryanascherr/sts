@@ -162,3 +162,5 @@ class Ironclad extends Character {
 }
 
 let ironclad = new Ironclad("Ironclad", 70);
+
+let hero = ironclad;
