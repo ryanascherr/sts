@@ -1,12 +1,12 @@
 //TODO 
 //Death
 //cards array thing
-//multiple enemies
-//create enemies on floor selection
+//can click multiple cards in a row
 
 let act = 1;
 let floor = 1;
 let turn;
+let canClickCard = true;
 
 let cardsArray = [strike_ironclad, defend_ironclad, bash];
 
@@ -71,6 +71,7 @@ function endRound() {
 }
 
 $(document).on('click','.card',function(){
+    if (!canClickCard) return;
     let cardClicked = this;
     let cardId = parseInt($(this).attr("data-id"));
     let chosenCard;
@@ -153,6 +154,9 @@ function decideEnemy() {
             } else if (enemy == "jawWorm") {
                 let newJawWorm = new JawWorm("Jaw Worm", 40, 44);
                 enemyArray.push(newJawWorm);
+            } else if (enemy == "slime") {
+                let newAcidSlimeM = new AcidSlimeM("Acid Slime M", 28, 32);
+                enemyArray.push(newAcidSlimeM);
             }
         }
     }
@@ -182,11 +186,15 @@ function placeEnemy(currentEnemy, index) {
 function highlightEnemies(cardId) {
     $(".enemy-img").addClass("highlight");
     $(".enemy-img").attr("data-id", cardId);
+    canClickCard = false;
+    $(".card").addClass("disabled");
 }
 
 function unhighlightEnemies() {
     $(".enemy-img").removeClass("highlight");
     $(".enemy-img").attr("data-id", "");
+    canClickCard = true;
+    $(".card").removeClass("disabled");
 }
 
   

@@ -51,7 +51,7 @@ section {
     width: 100px;
 }
 
-.card:hover {
+.card:hover:not(.disabled) {
     cursor: pointer;
     transform: scale(1.1);
 }
@@ -166,4 +166,8 @@ button:hover {
 
 .enemy-img.highlight:hover {
     cursor: pointer;
+}
+
+.disabled {
+    opacity: 50%;
 }

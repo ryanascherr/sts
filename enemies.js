@@ -323,11 +323,12 @@ class RedLouse extends Enemy {
     }
     bite() {
         let damage = this.biteDamage + this.strength;
+        console.log(damage);
         console.log(this.name + " attacks " + hero.name + ".");
         hero.takeDamage(damage, this);
     }
     grow() {
-        this.stength += 3;
+        this.strength += 3;
         console.log(this.name + " gains 3 strength. Strength is " + this.strength + ".");
     }
     takeDamageSpecific(index) {
@@ -438,13 +439,20 @@ class GreenLouse extends Enemy {
     }
 }
 
+class AcidSlimeM extends Enemy {
+    src = "acid_slime-m";
+    corrosiveSpitCounter = 0;
+    lickCounter = 0;
+    tackleCounter = 0;
+}
+
 let cultist = new Cultist("Cultist", 48, 54);
 let jawWorm = new JawWorm("Jaw Worm", 40, 44);
 let redLouse = new RedLouse("Red Louse", 10, 15);
-let greenLouse = new GreenLouse("Green Louse", 17, 11);
-
+let greenLouse = new GreenLouse("Green Louse", 11, 17);
+let acidSlimeM = new AcidSlimeM("Acid Slime M", 28, 32);
 let louses = "louses";
 
-let actOneEarlyEncounters = ["cultist", "jawWorm", "louses"];
+let actOneEarlyEncounters = ["louses"];
 let enemy;
 let enemyArray = [];
