@@ -10,6 +10,8 @@ class Character {
         this.newVulnerable = false;
         this.weak = 0;
         this.newWeak = false;
+        this.frail = 0;
+        this.newFrail = false;
         this.energy = 3;
         this.isAlive = true;
         this.handSize = 5;
@@ -82,6 +84,13 @@ class Character {
         }
         this.weak += number;
         console.log(this.name + " has " + this.weak + " weak.")
+    }
+    applyFrail(number) {
+        if (this.frail == 0) {
+            this.newFrail = true;
+        }
+        this.frail += number;
+        console.log(this.name + " has " + this.frail + " frail.")
     }
     dies() {
         console.log(this.name + " has died. GAME OVER.");

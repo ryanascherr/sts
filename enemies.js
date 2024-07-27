@@ -591,6 +591,94 @@ class AcidSlimeS extends Enemy {
     }
 }
 
+class SpikeSlimeM extends Enemy {
+    src = "spike_slime-m";
+    lickCounter = 0;
+    flameTackleCounter = 0;
+    decideAction() {
+        let randomNumber = getRandomNumber(100, 1);
+
+        if (randomNumber <= 70) {
+            if (this.lickCounter == 2) {
+                this.decideAction();
+                return;
+            }
+            this.declaredAction = "Lick";
+            this.lickCounter++;
+            this.flameTackleCounter = 0;
+        } else {
+            if (this.flameTackleCounter == 2) {
+                this.decideAction();
+                return;
+            }
+            this.declaredAction = "Flame Tackle";
+            this.flameTackleCounter++;
+            this.lickCounter = 0;
+        }
+    }
+    showIntent(index) {
+        let enemyIntents = $(".enemies .intent-icon");
+        let currentIntentTarget = enemyIntents[index];
+        let enemyDamageNumbers = $(".enemies .damage-number");
+        let currentDamageNumberTarget = enemyDamageNumbers[index];
+
+        if (this.declaredAction == "Lick") {
+            $(currentIntentTarget).attr("src", `./img/intents/intent_debuff.png`);
+            console.log(this.name + " intends to debuff " + hero.name + ".");
+        }
+        if (this.declaredAction == "Flame Tackle") {
+            let attackDamage = 8 + this.strength;
+            $(currentIntentTarget).attr("src", `./img/intents/intent_attack-debuff.png`);
+            $(currentDamageNumberTarget).text(attackDamage);
+            console.log(this.name + " intends to attack for " + attackDamage + " damage.");
+            console.log(this.name + " intends to debuff " + hero.name + ".");
+        }
+    }
+    performAction(index) {
+        if (this.declaredAction == "Lick") {
+            this.lick();
+        }
+        if (this.declaredAction == "Flame Tackle") {
+            this.flameTackle();
+        }
+    }
+    lick() {
+        hero.applyFrail(1);
+    }
+    flameTackle() {
+        let damage = 8 + this.strength;
+        console.log(this.name + " attacks " + hero.name + ".");
+        //slimed
+        hero.takeDamage(damage, this);
+    }
+}
+
+class SpikeSlimeS extends Enemy {
+    src = "spike_slime-s";
+    decideAction() {
+        this.declaredAction = "Tackle";
+    }
+    showIntent(index) {
+        let enemyIntents = $(".enemies .intent-icon");
+        let currentIntentTarget = enemyIntents[index];
+        let enemyDamageNumbers = $(".enemies .damage-number");
+        let currentDamageNumberTarget = enemyDamageNumbers[index];
+
+        let attackDamage = 5 + this.strength;
+        $(currentIntentTarget).attr("src", `./img/intents/intent_attack.png`);
+        $(currentDamageNumberTarget).text(attackDamage);
+        console.log(this.name + " intends to attack for " + attackDamage + " damage.");
+    }
+    performAction(index) {
+        this.tackle();
+    }
+    tackle() {
+        let damage = 5 + this.strength;
+        console.log(this.name + " attacks " + hero.name + ".");
+        hero.takeDamage(damage, this);
+    }
+}
+
 let cultist = new Cultist("Cultist", 48, 54);
 let jawWorm = new JawWorm("Jaw Worm", 40, 44);
 let redLouse = new RedLouse("Red Louse", 10, 15);
@@ -600,6 +688,6 @@ let acidSlimeS = new AcidSlimeS("Acid Slime S", 8, 12);
 let louses = "louses";
 let slimes = "slimes";
 
-let actOneEarlyEncounters = ["slime"];
+let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
 let enemy;
 let enemyArray = [];

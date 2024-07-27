@@ -1,7 +1,9 @@
 //TODO 
 //Death
 //cards array thing
-//startTurnSpecific
+//startTurnSpecific for louses
+//frail
+//slimed
 
 let act = 1;
 let floor = 1;
@@ -154,9 +156,24 @@ function decideEnemy() {
             } else if (enemy == "jawWorm") {
                 let newJawWorm = new JawWorm("Jaw Worm", 40, 44);
                 enemyArray.push(newJawWorm);
-            } else if (enemy == "slime") {
-                let newAcidSlimeS = new AcidSlimeS("Acid Slime S", 28, 32);
-                enemyArray.push(newAcidSlimeS);
+            } else if (enemy == "slimes") {
+                let randomNumberOne = getRandomNumber(2, 1);
+                let randomNumberTwo = getRandomNumber(2, 1);
+
+                if (randomNumberOne == 1) {
+                    let newAcidSlimeM = new AcidSlimeM("Acid Slime M 1", 28, 32);
+                    enemyArray.push(newAcidSlimeM);
+                } else {
+                    let newSpikeSlimeM = new SpikeSlimeM("Spike Slime M 1", 28, 32);
+                    enemyArray.push(newSpikeSlimeM);
+                }
+                if (randomNumberTwo == 1) {
+                    let newAcidSlimeS = new AcidSlimeS("Acid Slime S 2", 8, 12);
+                    enemyArray.push(newAcidSlimeS);
+                } else {
+                    let newSpikeSlimeM = new SpikeSlimeS("Spike Slime S 2", 10, 14);
+                    enemyArray.push(newSpikeSlimeM);
+                }
             }
         }
     }
