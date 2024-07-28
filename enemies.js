@@ -27,7 +27,7 @@ class Enemy {
                 this.block = 0;
             }
             damage = damage - currentBlock;
-            if (damage < 0) {
+            if (damage <= 0) {
                 damage = 0;
             }
         }
@@ -49,6 +49,10 @@ class Enemy {
         $(currentMaxtHealth).html(this.maxHealth);
 
         console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
+
+        if (this.currentHealth <= 0) {
+            this.die(index);
+        }
 
         this.takeDamageSpecific(index);
     }
@@ -93,6 +97,15 @@ class Enemy {
     updateStatus(statusNumber, statusName, index) {
         let correctStatusNumber = $(`.enemies .single-status-container.${statusName} .status-number`)[index];
         $(correctStatusNumber).html(statusNumber);
+    }
+    die(index) {
+        let perishedEnemy = $(".one-enemy")[index];
+        $(perishedEnemy).remove();
+        enemyArray.splice(index, 1);
+        console.log(enemyArray);
+        if (enemyArray.length == 0) {
+            winFight();
+        }
     }
     preTurn(index) {
         let currentEnemy = enemyArray[index];

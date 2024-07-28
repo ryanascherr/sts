@@ -4,7 +4,8 @@
 //startTurnSpecific for louses
 //slimed
 //consolodate status applications into 1 function
-//status to correct enemy
+//louses curl up blocks intent
+//enemyShield
 
 let act = 1;
 let floor = 1;
@@ -215,6 +216,10 @@ function unhighlightEnemies() {
     $(".enemy-img").attr("data-id", "");
     canClickCard = true;
     $(".card").removeClass("disabled");
+}
+
+function winFight() {
+    console.log(hero.deck);
 }
 
   
