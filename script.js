@@ -6,13 +6,14 @@
 //consolodate status applications into 1 function
 //louses curl up blocks intent
 //enemyShield
+//slimed removed when fight ends
 
 let act = 1;
 let floor = 1;
 let turn;
 let canClickCard = true;
 
-let cardsArray = [strike_ironclad, defend_ironclad, bash];
+let cardsArray = [strike_ironclad, defend_ironclad, bash, slimed];
 
 let heroHealthBar = $(".hero progress");
 let enemyHealthBar = $(".enemies progress");
@@ -91,7 +92,7 @@ $(document).on('click','.card',function(){
     if (chosenCard.type == "Attack") {
         if (enemyArray.length == 1) {
             target = enemyArray[0];
-            chosenCard.performEffect(target, 0);
+            chosenCard.performEffect(target, 0, cardClicked);
             hero.energy -= cost;
             $(".hero-energy").html(hero.energy);
         } else {

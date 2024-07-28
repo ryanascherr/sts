@@ -36,8 +36,15 @@ class Bash extends Card {
     }
 }
 
+class Slimed extends Card {
+    performEffect(target, index, cardClicked) {
+        $(cardClicked).remove();
+    }
+}
+
 let strike_ironclad = new Strike_Ironclad(1, "Strike", "Ironclad", "Attack", "Common", 1, "Deal 6 damage.", "strike_ironclad.png");
 let defend_ironclad = new Defend_Ironclad(2, "Defend", "Ironclad", "Skill", "Common", 1, "Gain 5 block.", "defend_ironclad.png");
 let bash = new Bash(3, "Bash", "Ironclad", "Attack", "Common", 2, "Deal 8 damage. Apply 2 Vulnerable.", "bash.png");
+let slimed = new Slimed(4, "Slimed", "Neutral", "Status", "Common", 1, "Exhaust", "slimed.png");
 
-let newCardArray = [strike_ironclad, defend_ironclad, bash];
+let newCardArray = [strike_ironclad, defend_ironclad, bash, slimed];

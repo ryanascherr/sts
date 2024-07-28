@@ -543,7 +543,7 @@ class AcidSlimeM extends Enemy {
             $(currentIntentTarget).attr("src", `./img/intents/intent_attack-debuff.png`);
             $(currentDamageNumberTarget).text(attackDamage);
             console.log(this.name + " intends to attack for " + attackDamage + " damage.");
-            //add card to discard
+            console.log(this.name + " intends to debuff " + hero.name + ".");
         }
         if (this.declaredAction == "Lick") {
             $(currentIntentTarget).attr("src", `./img/intents/intent_debuff.png`);
@@ -569,9 +569,11 @@ class AcidSlimeM extends Enemy {
     }
     corrosiveSpit() {
         let damage = 7 + this.strength;
-        //add slimed
         console.log(this.name + " attacks " + hero.name + ".");
+        console.log(this.name + " added a Slime to " + hero.name + "'s discard pile.");
         hero.takeDamage(damage, this);
+        hero.discardPile.push(4);
+        console.log(hero.discardPile);
     }
     lick() {
         hero.applyWeak(1);
@@ -704,7 +706,9 @@ class SpikeSlimeM extends Enemy {
     flameTackle() {
         let damage = 8 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
-        //slimed
+        console.log(this.name + " added a Slime to " + hero.name + "'s discard pile.");
+        hero.discardPile.push(4);
+        console.log(hero.discardPile);
         hero.takeDamage(damage, this);
     }
 }
@@ -776,7 +780,7 @@ class TestEnemy extends Enemy {
     }
 }
 
-let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
-// let actOneEarlyEncounters = ["slimes"];
+// let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
+let actOneEarlyEncounters = ["slimes"];
 let enemy;
 let enemyArray = [];
