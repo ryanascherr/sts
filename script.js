@@ -219,7 +219,14 @@ function unhighlightEnemies() {
 }
 
 function winFight() {
-    console.log(hero.deck);
+    hero.discardCards();
+    hero.drawPile.forEach((cardId, index)=>{
+        hero.deck.push(cardId);
+    })
+    hero.discardPile.forEach((cardId, index)=>{
+        hero.deck.push(cardId);
+    })
+    $(".hero-statuses").empty();
 }
 
   
