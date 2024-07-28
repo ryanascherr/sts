@@ -7,7 +7,9 @@ class Enemy {
         this.strength = 0;
         this.dexterity = 0;
         this.vulnerable = 0;
+        this.newVulnerable = false;
         this.weak = 0;
+        this.frail = 0;
         this.declaredAction = "";
         this.intentIcon = "";
     }
@@ -54,9 +56,19 @@ class Enemy {
         this.block += block;
         console.log(this.name + " gains " + block + " block. They have " + this.block + " block.")
     }
-    applyVulnerable(number) {
+    applyVulnerable(number, index) {
+        if (this.vulnerable == 0) {
+            this.newVulnerable = true;
+        }
+
         this.vulnerable += number;
-        console.log(this.name + " has " + this.vulnerable + " vulnerable.")
+        console.log(this.name + " has " + this.vulnerable + " vulnerable.");
+
+        if (this.newVulnerable) {
+            this.addNewStatus(this.vulnerable, "vulnerable", index);
+        } else {
+            this.updateStatus(this.vulnerable, "vulnerable", index);
+        }
     }
     applyWeak(number) {
         this.weak += number;
@@ -68,6 +80,19 @@ class Enemy {
         }
         this.frail += number;
         console.log(this.name + " has " + this.frail + " frail.")
+    }
+    addNewStatus(statusNumber, statusName, index) {
+        let correctStatus = $(".enemy-statuses")[index];
+        $(correctStatus).append(`
+            <div data-index=${index} class="single-status-container ${statusName}">
+                <img class="status-img" src="./img/icons/icon_${statusName}.png">
+                <span class="status-number" data-index=${index}>${statusNumber}</span>
+            </div>
+        `);
+    }
+    updateStatus(statusNumber, statusName, index) {
+        let correctStatusNumber = $(`.enemies .single-status-container.${statusName} .status-number`)[index];
+        $(correctStatusNumber).html(statusNumber);
     }
     preTurn(index) {
         let currentEnemy = enemyArray[index];
@@ -94,11 +119,21 @@ class Enemy {
         }
         this.performAction(index);
     }
-    endRoundGeneral() {
+    endRoundGeneral(index) {
         if (this.vulnerable != 0) {
+            this.newVulnerable = false;
             this.vulnerable -= 1;
             console.log(this.name + " has " + this.vulnerable + " vulnerable.");
+
+            let statusBox = ($(`.enemies .single-status-container.vulnerable[data-index="${index}"]`));
+            let numberBox = $(`.enemies .single-status-container.vulnerable .status-number[data-index="${index}"]`)
+            if (this.vulnerable == 0) {
+                $(statusBox).remove();
+            } else {
+                $(numberBox).html(this.vulnerable);
+            }
         }
+        //TODO work on these
         if (this.weak != 0) {
             this.weak -= 1;
             console.log(this.name + " has " + this.weak + " weak.");
@@ -109,10 +144,8 @@ class Enemy {
         }
     }
     endRoundSpecific() {
-
     }
     takeDamageSpecific() {
-
     }
 }
 
@@ -334,7 +367,6 @@ class RedLouse extends Enemy {
     }
     bite() {
         let damage = this.biteDamage + this.strength;
-        console.log(damage);
         console.log(this.name + " attacks " + hero.name + ".");
         hero.takeDamage(damage, this);
     }
@@ -690,16 +722,48 @@ class SpikeSlimeS extends Enemy {
     }
 }
 
-let cultist = new Cultist("Cultist", 48, 54);
-let jawWorm = new JawWorm("Jaw Worm", 40, 44);
-let redLouse = new RedLouse("Red Louse", 10, 15);
-let greenLouse = new GreenLouse("Green Louse", 11, 17);
-let acidSlimeM = new AcidSlimeM("Acid Slime M", 28, 32);
-let acidSlimeS = new AcidSlimeS("Acid Slime S", 8, 12);
-let louses = "louses";
-let slimes = "slimes";
+class TestEnemy extends Enemy {
+    src = "acid_slime-s";
+    decideAction() {
+        if (Math.abs(turn % 2) == 1) {
+            this.declaredAction = "Lick";
+        } else {
+            this.declaredAction = "Do Nothing";
+        }
+    }
+    showIntent(index) {
+        let enemyIntents = $(".enemies .intent-icon");
+        let currentIntentTarget = enemyIntents[index];
+        let enemyDamageNumbers = $(".enemies .damage-number");
+        let currentDamageNumberTarget = enemyDamageNumbers[index];
 
-// let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
-let actOneEarlyEncounters = ["slimes"];
+        if (this.declaredAction == "Lick") {
+            $(currentIntentTarget).attr("src", `./img/intents/intent_debuff.png`);
+            console.log(this.name + " intends to debuff " + hero.name + ".");
+        }
+        if (this.declaredAction == "Do Nothing") {
+            $(currentIntentTarget).attr("src", ``);
+            console.log(this.name + " intends to do nothing.");
+        }
+    }
+    performAction(index) {
+        if (this.declaredAction == "Lick") {
+            this.lick();
+        }
+        if (this.declaredAction == "Do Nothing") {
+            this.doNothing();
+        }
+    }
+    lick() {
+        hero.applyWeak(3);
+    }
+    doNothing() {
+        hero.applyVulnerable(2);
+        hero.applyFrail(4);
+    }
+}
+
+let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
+// let actOneEarlyEncounters = ["slimes"];
 let enemy;
 let enemyArray = [];

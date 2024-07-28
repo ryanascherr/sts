@@ -78,22 +78,58 @@ class Character {
         if (this.vulnerable == 0) {
             this.newVulnerable = true;
         }
+
         this.vulnerable += number;
-        console.log(this.name + "has " + this.vulnerable + " vulnerable.")
+        console.log(this.name + " has " + this.vulnerable + " vulnerable.");
+
+        let noVulnerableCurrently = $(".hero .single-status-container.vulnerable").length == 0;
+        if (this.newVulnerable && noVulnerableCurrently) {
+            this.addNewStatus(this.vulnerable, "vulnerable");
+        } else {
+            this.updateStatus(this.vulnerable, "vulnerable");
+        }
     }
     applyWeak(number) {
-        if (this.vulnerable == 0) {
+        if (this.weak == 0) {
             this.newWeak = true;
         }
+
         this.weak += number;
-        console.log(this.name + " has " + this.weak + " weak.")
+        console.log(this.name + " has " + this.weak + " weak.");
+
+        let noWeakCurrently = $(".hero .single-status-container.weak").length == 0;
+        if (this.newWeak && noWeakCurrently) {
+            this.addNewStatus(this.weak, "weak");
+        } else {
+            this.updateStatus(this.weak, "weak");
+        }
     }
     applyFrail(number) {
         if (this.frail == 0) {
             this.newFrail = true;
-        }
+        } 
+
         this.frail += number;
-        console.log(this.name + " has " + this.frail + " frail.")
+        console.log(this.name + " has " + this.frail + " frail.");
+
+        let noFrailCurrently = $(".hero .single-status-container.frail").length == 0;
+        if (this.newFrail && noFrailCurrently) {
+            this.addNewStatus(this.frail, "frail");
+        } else {
+            this.updateStatus(this.frail, "frail");
+        }
+    }
+    addNewStatus(statusNumber, statusName) {
+        $(".hero-statuses").append(`
+            <div class="single-status-container ${statusName}">
+                <img class="status-img" src="./img/icons/icon_${statusName}.png">
+                <span class="status-number">${statusNumber}</span>
+            </div>
+        `);
+        
+    }
+    updateStatus(statusNumber, statusName) {
+        $(`.hero .single-status-container.${statusName} .status-number`).html(statusNumber);
     }
     dies() {
         console.log(this.name + " has died. GAME OVER.");
@@ -154,6 +190,12 @@ class Character {
             }
             this.vulnerable -= 1;
             console.log(this.name + " has " + this.vulnerable + " vulnerable.");
+
+            if (this.vulnerable == 0) {
+                $(`.hero .single-status-container.vulnerable`).remove();
+            } else {
+                $(`.hero .single-status-container.vulnerable .status-number`).html(this.vulnerable);
+            }
         }
         if (this.weak != 0) {
             if (this.newWeak) {
@@ -162,14 +204,26 @@ class Character {
             }
             this.weak -= 1;
             console.log(this.name + " has " + this.weak + " weak.");
+
+            if (this.weak == 0) {
+                $(`.single-status-container.weak`).remove();
+            } else {
+                $(`.single-status-container.weak .status-number`).html(this.weak);
+            }
         }
         if (this.frail != 0) {
-            if (this.frail) {
+            if (this.newFrail) {
                 this.newFrail = false;
                 return;
             }
             this.frail -= 1;
             console.log(this.name + " has " + this.frail + " frail.");
+
+            if (this.frail == 0) {
+                $(`.single-status-container.frail`).remove();
+            } else {
+                $(`.single-status-container.frail .status-number`).html(this.frail);
+            }
         }
     }
 }

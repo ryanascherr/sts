@@ -31,7 +31,7 @@ class Bash extends Card {
         }
         let damage = 8 + hero.strength;
         target.takeDamage(damage, index);
-        target.applyVulnerable(2);
+        target.applyVulnerable(2, index);
     }
 }
 

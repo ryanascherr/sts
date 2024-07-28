@@ -175,3 +175,26 @@ button:hover {
 body {
     font-family: sans-serif;
 }
+
+.hero-statuses, .enemy-statuses {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.hero-statuses {
+    justify-content: end;
+}
+
+.enemy-statuses {
+    justify-content: start;
+}
+
+.status-img {
+    width: 35px;
+}
+
+.single-status-container {
+    border: 2px solid green;
+    margin: 0 5px;
+}

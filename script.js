@@ -2,8 +2,9 @@
 //Death
 //cards array thing
 //startTurnSpecific for louses
-//frail
 //slimed
+//consolodate status applications into 1 function
+//status to correct enemy
 
 let act = 1;
 let floor = 1;
@@ -90,7 +91,6 @@ $(document).on('click','.card',function(){
         if (enemyArray.length == 1) {
             target = enemyArray[0];
             chosenCard.performEffect(target, 0);
-            hero.discardPile.push(cardId);
             hero.energy -= cost;
             $(".hero-energy").html(hero.energy);
         } else {
@@ -98,11 +98,11 @@ $(document).on('click','.card',function(){
         }
     } else {
         chosenCard.performEffect(target);
-        hero.discardPile.push(cardId);
         hero.energy -= cost;
         $(".hero-energy").html(hero.energy);
     }
 
+    hero.discardPile.push(cardId);
     $(cardClicked).remove();
 });
 
@@ -127,6 +127,9 @@ $(".js_end-turn").click(function() {
 
 function decideEnemy() {
     if (act == 1) {
+        // let testEnemy = new TestEnemy("TEST", 50, 100);
+        // enemyArray.push(testEnemy);
+        // return;
         if (floor <= 3) {
             let numberOfEncounters = actOneEarlyEncounters.length;
             let randomNumber = getRandomNumber(numberOfEncounters, 1);
