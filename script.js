@@ -1,15 +1,14 @@
 //TODO 
-//Death
+//Death for player
 //cards array thing
 //startTurnSpecific for louses
-//slimed
-//consolodate status applications into 1 function
-//louses curl up blocks intent
+//consolidate status applications into 1 function
+//louses curl up animation
 //enemyShield
 //slimed removed when fight ends
 
 let act = 1;
-let floor = 1;
+let floor = 7;
 let turn;
 let canClickCard = true;
 
@@ -179,6 +178,20 @@ function decideEnemy() {
                     let newSpikeSlimeM = new SpikeSlimeS("Spike Slime S 2", 10, 14);
                     enemyArray.push(newSpikeSlimeM);
                 }
+            }
+        } else {
+            let numberOfEncounters = actOneOtherEncounters.length;
+            let randomNumber = getRandomNumber(numberOfEncounters, 1);
+            enemy = actOneOtherEncounters[randomNumber-1];
+            
+            if (enemy == "blueSlaver") {
+                let newEnemy = new BlueSlaver("Blue Slaver", 46, 50);
+                enemyArray.push(newEnemy);
+            } else if (enemy == "fungiBeasts") {
+                let newEnemyOne = new FungiBeast("Fungi Beast 1", 22, 28);
+                enemyArray.push(newEnemyOne);
+                let newEnemyTwo = new FungiBeast("Fungi Beast 2", 22, 28);
+                enemyArray.push(newEnemyTwo);
             }
         }
     }

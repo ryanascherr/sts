@@ -154,8 +154,6 @@ class Character {
     }
     makeNewDrawPile() {
         this.drawPile = this.discardPile;
-        console.log("making new draw pile");
-        console.log(this.drawPile);
         this.discardPile = [];
     }
     discardCards() {

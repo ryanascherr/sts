@@ -102,10 +102,12 @@ class Enemy {
         let perishedEnemy = $(".one-enemy")[index];
         $(perishedEnemy).remove();
         enemyArray.splice(index, 1);
-        console.log(enemyArray);
         if (enemyArray.length == 0) {
             winFight();
-        }
+            return;
+        };
+
+        this.dieSpecific(index);
     }
     preTurn(index) {
         let currentEnemy = enemyArray[index];
@@ -159,6 +161,8 @@ class Enemy {
     endRoundSpecific() {
     }
     takeDamageSpecific() {
+    }
+    dieSpecific() {
     }
 }
 
@@ -780,7 +784,135 @@ class TestEnemy extends Enemy {
     }
 }
 
+class BlueSlaver extends Enemy {
+    src = "blue_slaver";
+    stabCounter = 0;
+    rakeCounter = 0;
+    decideAction() {
+        let randomNumber = getRandomNumber(10, 1);
+
+        if (randomNumber <= 6) {
+            if (this.stabCounter == 2) {
+                this.decideAction();
+                return;
+            }
+            this.declaredAction = "Stab";
+            this.stabCounter++;
+            this.rakeCounter = 0;
+        } else {
+            if (this.rakeCounter == 2) {
+                this.decideAction();
+                return;
+            }
+            this.declaredAction = "Rake";
+            this.rakeCounter++;
+            this.stabCounter = 0;
+        }
+    }
+    showIntent(index) {
+        let enemyIntents = $(".enemies .intent-icon");
+        let currentIntentTarget = enemyIntents[index];
+        let enemyDamageNumbers = $(".enemies .damage-number");
+        let currentDamageNumberTarget = enemyDamageNumbers[index];
+
+        if (this.declaredAction == "Stab") {
+            let attackDamage = 12 + this.strength;
+            $(currentIntentTarget).attr("src", `./img/intents/intent_big-attack.png`);
+            $(currentDamageNumberTarget).text(attackDamage);
+            console.log(this.name + " intends to attack for " + attackDamage + ".");
+        }
+        if (this.declaredAction == "Rake") {
+            let attackDamage = 7 + this.strength;
+            $(currentIntentTarget).attr("src", `./img/intents/intent_attack-debuff.png`);
+            $(currentDamageNumberTarget).text(attackDamage);
+            console.log(this.name + " intends to attack for " + attackDamage + " damage.");
+            console.log(this.name + " intends to debuff " + hero.name + ".");
+        }
+    }
+    performAction(index) {
+        if (this.declaredAction == "Stab") {
+            this.stab();
+        }
+        if (this.declaredAction == "Rake") {
+            this.rake();
+        }
+    }
+    stab() {
+        let damage = 12 + this.strength;
+        console.log(this.name + " attacks " + hero.name + ".");
+        hero.takeDamage(damage, this);
+    }
+    rake() {
+        let damage = 7 + this.strength;
+        console.log(this.name + " attacks " + hero.name + ".");
+        hero.takeDamage(damage, this);
+        hero.applyWeak(1);
+    }
+}
+
+class FungiBeast extends Enemy {
+    src = "fungi_beast";
+    biteCounter = 0;
+    growCounter = 0;
+    decideAction() {
+        let randomNumber = getRandomNumber(10, 1);
+
+        if (randomNumber <= 6) {
+            if (this.biteCounter == 2) {
+                this.decideAction();
+                return;
+            }
+            this.declaredAction = "Bite";
+            this.biteCounter++;
+            this.growCounter = 0;
+        } else {
+            if (this.growCounter == 1) {
+                this.decideAction();
+                return;
+            }
+            this.declaredAction = "Grow";
+            this.growCounter++;
+            this.biteCounter = 0;
+        }
+    }
+    showIntent(index) {
+        let enemyIntents = $(".enemies .intent-icon");
+        let currentIntentTarget = enemyIntents[index];
+        let enemyDamageNumbers = $(".enemies .damage-number");
+        let currentDamageNumberTarget = enemyDamageNumbers[index];
+
+        if (this.declaredAction == "Bite") {
+            let attackDamage = 6 + this.strength;
+            $(currentIntentTarget).attr("src", `./img/intents/intent_attack.png`);
+            $(currentDamageNumberTarget).text(attackDamage);
+            console.log(this.name + " intends to attack for " + attackDamage + ".");
+        }
+        if (this.declaredAction == "Grow") {
+            $(currentIntentTarget).attr("src", `./img/intents/intent_buff.png`);
+            console.log(this.name + " intends to buff themselves.");
+        }
+    }
+    performAction(index) {
+        if (this.declaredAction == "Bite") {
+            this.bite();
+        }
+        if (this.declaredAction == "Grow") {
+            this.grow();
+        }
+    }
+    bite() {
+        let damage = 6 + this.strength;
+        console.log(this.name + " attacks " + hero.name + ".");
+        hero.takeDamage(damage, this);
+    }
+    grow() {
+        this.strength += 3;
+        console.log(this.name + " gains 3 strength. Strength is " + this.strength + ".");
+    }
+}
+
 // let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
-let actOneEarlyEncounters = ["slimes"];
+let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
+let actOneOtherEncounters = ["blueSlaver", "fungiBeasts"];
 let enemy;
 let enemyArray = [];
