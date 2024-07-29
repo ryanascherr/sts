@@ -3,9 +3,9 @@
 //cards array thing
 //startTurnSpecific for louses
 //consolidate status applications into 1 function
-//louses curl up animation
-//enemyShield
+//louses curl up animation - icon not actual image
 //slimed removed when fight ends
+//animations
 
 let act = 1;
 let floor = 2;
