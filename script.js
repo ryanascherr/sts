@@ -8,7 +8,7 @@
 //slimed removed when fight ends
 
 let act = 1;
-let floor = 7;
+let floor = 2;
 let turn;
 let canClickCard = true;
 
@@ -208,7 +208,15 @@ function placeEnemy(currentEnemy, index) {
                 <img src="" alt="" class="intent-icon">
                 <span class="damage-number"></span>
             </div>
-            <img class="enemy-img" data-index="${index}" src="./img/enemies/${currentEnemy.src}.png" alt="">
+            <div class="enemy-shield-container">
+                <div class="block-parent">
+                    <div class="block-container d-none">
+                        <img class="block-icon" src="./img/icons/icon_block.png" alt="">
+                        <span class="block-number"></span>
+                    </div>
+                </div>
+                <img class="enemy-img" data-index="${index}" src="./img/enemies/${currentEnemy.src}.png" alt="">
+            </div>
             <div class="enemy-health">
                 <progress value="100" max="100"></progress>
                 <div><span class="current-health"></span>/<span class="max-health"></span></div>

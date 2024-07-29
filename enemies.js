@@ -26,6 +26,12 @@ class Enemy {
             if (this.block < 0) {
                 this.block = 0;
             }
+            if (this.block == 0) {
+                let correctShieldContainer = $(".enemy-shield-container .block-container")[index];
+                $(correctShieldContainer).addClass("d-none");
+            }
+            let correctShieldNumber = $(".enemy-shield-container .block-container .block-number")[index];
+            $(correctShieldNumber).html(this.block);
             damage = damage - currentBlock;
             if (damage <= 0) {
                 damage = 0;
@@ -56,9 +62,18 @@ class Enemy {
 
         this.takeDamageSpecific(index);
     }
-    gainBlock(block) {
+    gainBlock(block, index) {
+        if (this.frail != 0) {
+            block = Math.floor(block*.75);
+        }
         this.block += block;
-        console.log(this.name + " gains " + block + " block. They have " + this.block + " block.")
+        if (this.block != 0) {
+            let correctShieldContainer = $(".enemy-shield-container .block-container")[index];
+            let correctShieldNumber = $(".enemy-shield-container .block-container .block-number")[index];
+            $(correctShieldContainer).removeClass("d-none");
+            $(correctShieldNumber).html(this.block);
+        }
+        console.log(this.name + " gains " + block + " block. They have " + this.block + " block.");
     }
     applyVulnerable(number, index) {
         if (this.vulnerable == 0) {
@@ -131,6 +146,12 @@ class Enemy {
         if (this.block != 0) {
             this.block = 0;
             console.log(this.name + " loses all block.");
+            
+            let correctShieldContainer = $(".enemy-shield-container .block-container")[index];
+            $(correctShieldContainer).addClass("d-none");
+            
+            let correctShieldNumber = $(".enemy-shield-container .block-container .block-number")[index];
+            $(correctShieldNumber).html(this.block);
         }
         this.performAction(index);
     }
@@ -281,34 +302,34 @@ class JawWorm extends Enemy {
             console.log(this.name + " intends to gain block.");
         }
     }
-    performAction() {
+    performAction(index) {
         if (this.declaredAction == "Chomp") {
-            this.chomp();
+            this.chomp(index);
         }
         if (this.declaredAction == "Thrash") {
-            this.thrash();
+            this.thrash(index);
         }
         if (this.declaredAction == "Bellow") {
-            this.bellow();
+            this.bellow(index);
         }
     }
-    chomp() {
+    chomp(index) {
         let damage = 11 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
         hero.takeDamage(damage, this);
     }
-    thrash() {
+    thrash(index) {
         let damage = 7 + this.strength;
         let block = 5 + this.dexterity;
         console.log(this.name + " attacks " + hero.name + ".");
         hero.takeDamage(damage, this);
-        this.gainBlock(block);
+        this.gainBlock(block, index);
     }
-    bellow() {
+    bellow(index) {
         this.strength += 3;
         let block = 6;
         console.log(this.name + " gains 3 strength. Strength is " + this.strength + ".");
-        this.gainBlock(block);
+        this.gainBlock(block, index);
     }
     endTurnSpecific() {
         
@@ -911,8 +932,8 @@ class FungiBeast extends Enemy {
     }
 }
 
+let actOneEarlyEncounters = ["jawWorm"];
 // let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
-let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
 let actOneOtherEncounters = ["blueSlaver", "fungiBeasts"];
 let enemy;
 let enemyArray = [];

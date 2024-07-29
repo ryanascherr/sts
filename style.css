@@ -87,14 +87,18 @@ section {
     display: none;
 }
 
-.hero-shield-container {
+.hero-shield-container, .enemy-shield-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.hero-shield-container .block-icon {
+.hero-shield-container .block-icon, .enemy-shield-container .block-icon {
     width: 35px;
+}
+
+.block-parent {
+    width: 50px;
 }
 
 .block-container {
@@ -180,6 +184,7 @@ body {
     display: flex;
     align-items: center;
     width: 100%;
+    height: 50px;
 }
 
 .hero-statuses {
