@@ -1,6 +1,7 @@
 body {
     background-color: black;
     color: white;
+    margin: 0;
 }
 
 .arena {
@@ -202,4 +203,40 @@ body {
 .single-status-container {
     border: 2px solid green;
     margin: 0 5px;
+}
+
+.sway {
+    animation-name: sway;
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+@keyframes sway {
+    0%   {transform: translateY(0);}
+    50%  {transform: translateY(2.5px);}
+    100% {transform: translateY(0);}
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #438294;
+    padding: 0 10px;
+}
+
+nav .nav_health-display {
+    display: flex;
+    align-items: center;
+}
+
+nav .nav_icon-heart {
+    width: 32px;
+}
+
+nav .nav_health-numbers {
+    color: red;
+    font-weight: bold;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }

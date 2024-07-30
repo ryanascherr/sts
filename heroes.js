@@ -50,6 +50,8 @@ class Character {
         $(".hero-health .max-health").html(this.maxHealth);
         console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
 
+        updateHealth();
+
         if (!this.isAlive) {
             this.dies();
         }
@@ -62,6 +64,8 @@ class Character {
         $(".hero-health .current-health").html(this.currentHealth);
         $(".hero-health .max-health").html(this.maxHealth);
         console.log(this.name + " gained " + health + " health. " + this.name + "'s current health is " + this.currentHealth + "/" + this.maxHealth + ".");
+
+        updateHealth();
     }
     gainBlock(block) {
         if (this.frail != 0) {

@@ -932,8 +932,8 @@ class FungiBeast extends Enemy {
     }
 }
 
-let actOneEarlyEncounters = ["jawWorm"];
-// let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
+// let actOneEarlyEncounters = ["jawWorm"];
+let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
 let actOneOtherEncounters = ["blueSlaver", "fungiBeasts"];
 let enemy;
 let enemyArray = [];

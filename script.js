@@ -215,7 +215,7 @@ function placeEnemy(currentEnemy, index) {
                         <span class="block-number"></span>
                     </div>
                 </div>
-                <img class="enemy-img" data-index="${index}" src="./img/enemies/${currentEnemy.src}.png" alt="">
+                <img class="enemy-img sway" data-index="${index}" src="./img/enemies/${currentEnemy.src}.png" alt="">
             </div>
             <div class="enemy-health">
                 <progress value="100" max="100"></progress>
@@ -251,6 +251,18 @@ function winFight() {
     $(".hero-statuses").empty();
 }
 
+function fillNav() {
+    $(".nav_class").text("the " + hero.name);
+    $(".nav_currentHealth").text(hero.currentHealth);
+    $(".nav_maxHealth").text(hero.maxHealth);
+}
+
+fillNav();
+
+function updateHealth() {
+    $(".nav_currentHealth").text(hero.currentHealth);
+    $(".nav_maxHealth").text(hero.maxHealth);
+}
   
   
 
