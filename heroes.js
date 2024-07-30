@@ -19,11 +19,11 @@ class Character {
         this.discardPile = [];
     }
     takeDamage(damage, attacker) {
-        if (this.vulnerable != 0) {
-            damage = Math.floor(damage*1.5);
-        }
         if (attacker.weak != 0) {
             damage = Math.floor(damage*.75);
+        }
+        if (this.vulnerable != 0) {
+            damage = Math.floor(damage*1.5);
         }
         if (this.block != 0) {
             let currentBlock = this.block;
@@ -235,7 +235,7 @@ class Character {
     }
 }
 
-class Ironclad extends Character {
+class Ironclad extends Hero {
     constructor(name, maxHealth) {
         super(name, maxHealth);
     }

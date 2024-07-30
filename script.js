@@ -43,8 +43,10 @@ $(".js_start-fight").click(function() {
 
 function startFight() {
     hero.startFight();
+    hero.startFightSpecific();
     $(enemyArray).each(function(index){
         this.startFight(index);
+        this.startFightSpecific(index);
     })
 }
 
@@ -52,6 +54,7 @@ function startPlayerTurn() {
     console.log("-- Turn " + turn + " --");
     
     hero.startTurn();
+    hero.startTurnSpecific();
     $(enemyArray).each(function(index){
         this.preTurn(index);
     })
@@ -59,6 +62,7 @@ function startPlayerTurn() {
 
 function endPlayerTurn() {
     hero.endTurn();
+    hero.endTurnSpecific();
 }
 
 function startEnemyTurn() {
@@ -71,10 +75,11 @@ function startEnemyTurn() {
     }
 }
 function endRound() {
-    hero.endRoundGeneral();
+    hero.endRound();
+    hero.endRoundSpecific();
 
     $(enemyArray).each(function(index) {
-        this.endRoundGeneral(index);
+        this.endRound(index);
         this.endRoundSpecific(index);
     })
     turn ++;
@@ -98,7 +103,7 @@ $(document).on('click','.card',function(){
     if (chosenCard.type == "Attack") {
         if (enemyArray.length == 1) {
             target = enemyArray[0];
-            chosenCard.performEffect(target, 0, cardClicked);
+            chosenCard.performEffect(target, hero, 0);
             hero.energy -= cost;
             $(".hero-energy").html(hero.energy);
         } else {
@@ -111,7 +116,6 @@ $(document).on('click','.card',function(){
     }
 
     hero.discardPile.push(cardId);
-    console.log(hero.discardPile);
     $(cardClicked).remove();
 });
 
@@ -213,7 +217,7 @@ function placeEnemy(currentEnemy, index) {
     $(".enemies").append(`
         <div class="one-enemy" data-index=${index}>
             <div class="intent">
-                <img src="" alt="" class="intent-icon">
+                <img src="" alt="" class="intent-icon sway-anim">
                 <span class="damage-number"></span>
             </div>
             <div class="enemy-shield-container">
@@ -301,6 +305,8 @@ function enemyBuff(index) {
         $(currentEnemyImg).removeClass("buff-anim"); 
     }, 250);
 }
+
+// console.log(hero);
   
   
 

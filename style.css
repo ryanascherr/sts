@@ -293,7 +293,7 @@ nav .nav_icon-heart {
 }
 
 nav .nav_health-numbers {
-    color: red;
+    color: #D4392A;
     font-weight: bold;
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }

@@ -14,11 +14,11 @@ class Enemy {
         this.intentIcon = "";
     }
     takeDamage(damage, index) {
-        if (this.vulnerable != 0) {
-            damage = Math.floor(damage*1.5);
-        }
         if (hero.weak != 0) {
             damage = Math.floor(damage*.75);
+        }
+        if (this.vulnerable != 0) {
+            damage = Math.floor(damage*1.5);
         }
         if (this.block != 0) {
             let currentBlock = this.block;
@@ -201,7 +201,7 @@ class Enemy {
     }
 }
 
-class Cultist extends Enemy {
+class Cultist extends Enemy2 {
     src = "cultist";
     hasIncanted = false;
     decideAction() {

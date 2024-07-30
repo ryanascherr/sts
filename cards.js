@@ -12,15 +12,14 @@ class Card {
 }
 
 class Strike_Ironclad extends Card {
-    performEffect(target, index) {
-        if (!index) {
-            index == 0;
-        }
+    performEffect(target, hero, index) {
+        if (!index) index == 0;
 
         heroAttack();
 
         setTimeout( () => {
-            target.takeDamage(6+hero.strength, index);
+            let damage = 6 + hero.strength;
+            target.takeDamage(damage, hero, index);
         }, 100);
     }
 }
@@ -30,16 +29,14 @@ class Defend_Ironclad extends Card {
     }
 }
 class Bash extends Card {
-    performEffect(target, index) {
-        if (!index) {
-            index == 0;
-        }
+    performEffect(target, hero, index) {
+        if (!index) index == 0;
 
         heroAttack();
 
         setTimeout( () => {
             let damage = 8 + hero.strength;
-            target.takeDamage(damage, index);
+            target.takeDamage(damage, hero, index);
             if (target.currentHealth == 0) return;
             target.applyVulnerable(2, index);
         }, 100);
