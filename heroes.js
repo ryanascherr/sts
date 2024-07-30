@@ -168,6 +168,9 @@ class Character {
             $(card).remove();
         })
     }
+    startFight() {
+
+    }
     startTurn() {
         if (this.block != 0) {
             this.block = 0;

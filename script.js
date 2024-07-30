@@ -36,19 +36,25 @@ $(".js_start-fight").click(function() {
         $(this).attr("value", currentEnemy.currentHealth);
         $(this).attr("max", currentEnemy.maxHealth);
     })
-    // $(enemyHealthBar).attr("value", enemy.currentHealth);
-    // $(enemyHealthBar).attr("max", enemy.maxHealth);
     turn = 1;
+    startFight();
     startPlayerTurn();
 });
 
+function startFight() {
+    hero.startFight();
+    $(enemyArray).each(function(index){
+        this.startFight(index);
+    })
+}
+
 function startPlayerTurn() {
     console.log("-- Turn " + turn + " --");
+    
     hero.startTurn();
     $(enemyArray).each(function(index){
         this.preTurn(index);
     })
-    // enemy.preTurn();
 }
 
 function endPlayerTurn() {

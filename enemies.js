@@ -124,6 +124,9 @@ class Enemy {
 
         this.dieSpecific(index);
     }
+    startFight() {
+
+    }
     preTurn(index) {
         let currentEnemy = enemyArray[index];
 
@@ -153,6 +156,7 @@ class Enemy {
             let correctShieldNumber = $(".enemy-shield-container .block-container .block-number")[index];
             $(correctShieldNumber).html(this.block);
         }
+
         this.performAction(index);
     }
     endRoundGeneral(index) {
@@ -340,20 +344,15 @@ class RedLouse extends Enemy {
     src = "red_louse";
     biteCounter = 0;
     growCounter = 0;
+    curlUp = getRandomNumber(3, 7);
     biteDamage = getRandomNumber(7, 5);
     hasUsedCurlUp = false;
     isCurlUpActive = false;
-    startTurn(index) {
-        if (this.block != 0) {
-            this.block = 0;
-            console.log(this.name + " loses all block.");
-        }
-        if (this.isCurlUpActive) {
-            let enemyImages = $(".enemy-img");
-            let currentEnemyImage = enemyImages[index];
-            $(currentEnemyImage).attr("src", `./img/enemies/${this.src}.png`);
-        }
-        this.performAction(index);
+    startFight(index) {
+        this.applyCurlUp(index, this.curlUp);
+    }
+    applyCurlUp(index) {
+        this.addNewStatus(this.curlUp, "curl-up", index);
     }
     decideAction() {
         let randomNumber = getRandomNumber(4, 1);
@@ -414,18 +413,16 @@ class RedLouse extends Enemy {
     }
     takeDamageSpecific(index) {
         if (!this.hasUsedCurlUp) {
-            this.curlUp(index);
+            this.curl(index);
         }
     }
-    curlUp(index) {
-        let enemyImages = $(".enemy-img");
-        let currentEnemyImage = enemyImages[index];
-        $(currentEnemyImage).attr("src", `./img/enemies/louse-curl-up.png`);
-        let randomNumber = getRandomNumber(7, 3);
-        this.block += randomNumber;
+    curl(index) {
+        this.gainBlock(this.curlUp, index);
         this.hasUsedCurlUp = true;
         this.isCurlUpActive = true;
-        console.log(this.name + " curled up and gained " + randomNumber + " block.");
+
+        let currentCurlIcon = $(`.enemy-statuses .curl-up[data-index=${index}]`);
+        $(currentCurlIcon).remove();
     }
 }
 
@@ -433,20 +430,15 @@ class GreenLouse extends Enemy {
     src = "green_louse";
     biteCounter = 0;
     spitWebCounter = 0;
+    curlUp = getRandomNumber(3, 7);
     biteDamage = getRandomNumber(7, 5);
     hasUsedCurlUp = false;
     isCurlUpActive = false;
-    startTurn(index) {
-        if (this.block != 0) {
-            this.block = 0;
-            console.log(this.name + " loses all block.");
-        }
-        if (this.isCurlUpActive) {
-            let enemyImages = $(".enemy-img");
-            let currentEnemyImage = enemyImages[index];
-            $(currentEnemyImage).attr("src", `./img/enemies/${this.src}.png`);
-        }
-        this.performAction();
+    startFight(index) {
+        this.applyCurlUp(index, this.curlUp);
+    }
+    applyCurlUp(index) {
+        this.addNewStatus(this.curlUp, "curl-up", index);
     }
     decideAction() {
         let randomNumber = getRandomNumber(4, 1);
@@ -505,18 +497,16 @@ class GreenLouse extends Enemy {
     }
     takeDamageSpecific(index) {
         if (!this.hasUsedCurlUp) {
-            this.curlUp(index);
+            this.curl(index);
         }
     }
-    curlUp(index) {
-        let enemyImages = $(".enemy-img");
-        let currentEnemyImage = enemyImages[index];
-        $(currentEnemyImage).attr("src", `./img/enemies/louse-curl-up.png`);
-        let randomNumber = getRandomNumber(7, 3);
-        this.block += randomNumber;
+    curl(index) {
+        this.gainBlock(this.curlUp, index);
         this.hasUsedCurlUp = true;
         this.isCurlUpActive = true;
-        console.log(this.name + " curled up and gained " + randomNumber + " block.");
+
+        let currentCurlIcon = $(`.enemy-statuses .curl-up[data-index=${index}]`);
+        $(currentCurlIcon).remove();
     }
 }
 
@@ -932,8 +922,8 @@ class FungiBeast extends Enemy {
     }
 }
 
-// let actOneEarlyEncounters = ["jawWorm"];
-let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
+let actOneEarlyEncounters = ["louses"];
+// let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
 let actOneOtherEncounters = ["blueSlaver", "fungiBeasts"];
 let enemy;
 let enemyArray = [];
