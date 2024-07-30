@@ -1,11 +1,11 @@
 //TODO 
 //Death for player
 //cards array thing
-//startTurnSpecific for louses
 //consolidate status applications into 1 function
-//louses curl up animation - icon not actual image
 //slimed removed when fight ends
 //animations
+//incantation
+//bash disappearing sometimes
 
 let act = 1;
 let floor = 2;
@@ -60,6 +60,7 @@ function startPlayerTurn() {
 function endPlayerTurn() {
     hero.endTurn();
 }
+
 function startEnemyTurn() {
     $(enemyArray).each(function(index) {
         this.startTurn(index);
@@ -110,6 +111,7 @@ $(document).on('click','.card',function(){
     }
 
     hero.discardPile.push(cardId);
+    console.log(hero.discardPile);
     $(cardClicked).remove();
 });
 
@@ -221,7 +223,7 @@ function placeEnemy(currentEnemy, index) {
                         <span class="block-number"></span>
                     </div>
                 </div>
-                <img class="enemy-img sway" data-index="${index}" src="./img/enemies/${currentEnemy.src}.png" alt="">
+                <img class="enemy-img sway-anim" data-index="${index}" src="./img/enemies/${currentEnemy.src}.png" alt="">
             </div>
             <div class="enemy-health">
                 <progress value="100" max="100"></progress>
@@ -268,6 +270,36 @@ fillNav();
 function updateHealth() {
     $(".nav_currentHealth").text(hero.currentHealth);
     $(".nav_maxHealth").text(hero.maxHealth);
+}
+
+function heroAttack() {
+    $(".hero-img").addClass("hero-attack-anim");
+    setTimeout( () => {
+        $(".hero-img").removeClass("hero-attack-anim"); 
+    }, 250);
+}
+
+function heroBuff() {
+    $(".hero-img").addClass("buff-anim");
+    setTimeout( () => {
+        $(".hero-img").removeClass("buff-anim"); 
+    }, 250);
+}
+
+function enemyAttack(index) {
+    let currentEnemyImg = $(".enemy-img")[index];
+    $(currentEnemyImg).addClass("enemy-attack-anim");
+    setTimeout( () => {
+        $(currentEnemyImg).removeClass("enemy-attack-anim"); 
+    }, 250);
+}
+
+function enemyBuff(index) {
+    let currentEnemyImg = $(".enemy-img")[index];
+    $(currentEnemyImg).addClass("buff-anim");
+    setTimeout( () => {
+        $(currentEnemyImg).removeClass("buff-anim"); 
+    }, 250);
 }
   
   

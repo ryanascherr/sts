@@ -104,14 +104,24 @@ class Enemy {
         let correctStatus = $(".enemy-statuses")[index];
         $(correctStatus).append(`
             <div data-index=${index} class="single-status-container ${statusName}">
-                <img class="status-img" src="./img/icons/icon_${statusName}.png">
+                <img class="status-img status-anim" src="./img/icons/icon_${statusName}.png">
                 <span class="status-number" data-index=${index}>${statusNumber}</span>
             </div>
         `);
+        let correctSpecificStatus = $(`.single-status-container[data-index="${index}"].${statusName} .status-img`);
+        setTimeout( () => {
+            $(correctSpecificStatus).removeClass("status-anim"); 
+        }, 1000);
     }
     updateStatus(statusNumber, statusName, index) {
         let correctStatusNumber = $(`.enemies .single-status-container.${statusName} .status-number`)[index];
         $(correctStatusNumber).html(statusNumber);
+
+        let correctSpecificStatus = $(`.single-status-container[data-index="${index}"].${statusName} .status-img`);
+        $(correctSpecificStatus).addClass("status-anim");
+        setTimeout( () => {
+            $(correctSpecificStatus).removeClass("status-anim"); 
+        }, 1000);
     }
     die(index) {
         let perishedEnemy = $(".one-enemy")[index];
@@ -218,21 +228,23 @@ class Cultist extends Enemy {
             console.log(this.name + " intends to attack for " + attackDamage + " damage.");
         }
     }
-    performAction() {
+    performAction(index) {
         if (this.declaredAction == "Incantation") {
-            this.incantation();
+            this.incantation(index);
         }
         if (this.declaredAction == "Dark Strike") {
-            this.darkStrike();
+            this.darkStrike(index);
         }
     }
-    incantation() {
+    incantation(index) {
         this.hasIncanted = true;
         console.log(this.name + " used Incanation. CAW!");
+        enemyBuff(index);
     }
-    darkStrike() {
+    darkStrike(index) {
         let damage = 6 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
     }
     endRoundSpecific() {
@@ -320,12 +332,14 @@ class JawWorm extends Enemy {
     chomp(index) {
         let damage = 11 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
     }
     thrash(index) {
         let damage = 7 + this.strength;
         let block = 5 + this.dexterity;
         console.log(this.name + " attacks " + hero.name + ".");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
         this.gainBlock(block, index);
     }
@@ -333,6 +347,7 @@ class JawWorm extends Enemy {
         this.strength += 3;
         let block = 6;
         console.log(this.name + " gains 3 strength. Strength is " + this.strength + ".");
+        enemyBuff(index);
         this.gainBlock(block, index);
     }
     endTurnSpecific() {
@@ -402,14 +417,16 @@ class RedLouse extends Enemy {
             this.grow(index);
         }
     }
-    bite() {
+    bite(index) {
         let damage = this.biteDamage + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
     }
-    grow() {
+    grow(index) {
         this.strength += 3;
         console.log(this.name + " gains 3 strength. Strength is " + this.strength + ".");
+        enemyBuff(index);
     }
     takeDamageSpecific(index) {
         if (!this.hasUsedCurlUp) {
@@ -481,18 +498,20 @@ class GreenLouse extends Enemy {
     }
     performAction(index) {
         if (this.declaredAction == "Bite") {
-            this.bite()
+            this.bite(index)
         }
         if (this.declaredAction == "Spit Web") {
-            this.spitWeb();
+            this.spitWeb(index);
         }
     }
-    bite() {
+    bite(index) {
         let damage = this.biteDamage + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
     }
-    spitWeb() {
+    spitWeb(index) {
+        enemyAttack(index);
         hero.applyWeak(2);
     }
     takeDamageSpecific(index) {
@@ -573,29 +592,31 @@ class AcidSlimeM extends Enemy {
     }
     performAction(index) {
         if (this.declaredAction == "Corrosive Spit") {
-            this.corrosiveSpit()
+            this.corrosiveSpit(index)
         }
         if (this.declaredAction == "Lick") {
-            this.lick();
+            this.lick(index);
         }
         if (this.declaredAction == "Tackle") {
-            this.tackle();
+            this.tackle(index);
         }
     }
-    corrosiveSpit() {
+    corrosiveSpit(index) {
         let damage = 7 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
         console.log(this.name + " added a Slime to " + hero.name + "'s discard pile.");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
         hero.discardPile.push(4);
-        console.log(hero.discardPile);
     }
-    lick() {
+    lick(index) {
+        enemyAttack(index);
         hero.applyWeak(1);
     }
-    tackle() {
+    tackle(index) {
         let damage = 10 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
     }
 }
@@ -648,18 +669,20 @@ class AcidSlimeS extends Enemy {
     }
     performAction(index) {
         if (this.declaredAction == "Lick") {
-            this.lick();
+            this.lick(index);
         }
         if (this.declaredAction == "Tackle") {
-            this.tackle();
+            this.tackle(index);
         }
     }
-    lick() {
+    lick(index) {
+        enemyAttack(index);
         hero.applyWeak(1);
     }
-    tackle() {
+    tackle(index) {
         let damage = 3 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
     }
 }
@@ -709,21 +732,22 @@ class SpikeSlimeM extends Enemy {
     }
     performAction(index) {
         if (this.declaredAction == "Lick") {
-            this.lick();
+            this.lick(index);
         }
         if (this.declaredAction == "Flame Tackle") {
-            this.flameTackle();
+            this.flameTackle(index);
         }
     }
-    lick() {
+    lick(index) {
+        enemyAttack(index);
         hero.applyFrail(1);
     }
-    flameTackle() {
+    flameTackle(index) {
         let damage = 8 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
         console.log(this.name + " added a Slime to " + hero.name + "'s discard pile.");
         hero.discardPile.push(4);
-        console.log(hero.discardPile);
+        enemyAttack(index);
         hero.takeDamage(damage, this);
     }
 }
@@ -745,11 +769,12 @@ class SpikeSlimeS extends Enemy {
         console.log(this.name + " intends to attack for " + attackDamage + " damage.");
     }
     performAction(index) {
-        this.tackle();
+        this.tackle(index);
     }
-    tackle() {
+    tackle(index) {
         let damage = 5 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
     }
 }
@@ -922,7 +947,7 @@ class FungiBeast extends Enemy {
     }
 }
 
-let actOneEarlyEncounters = ["louses"];
+let actOneEarlyEncounters = ["cultist"];
 // let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
 let actOneOtherEncounters = ["blueSlaver", "fungiBeasts"];
 let enemy;
