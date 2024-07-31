@@ -1,13 +1,8 @@
 class Hero extends TestChar {
-    constructor(name, maxHealth) {
-        super();
-        this.maxHealth = maxHealth;
-        this.currentHealth = maxHealth;
-        this.energy = 3;
-        this.handSize = 5;
-        this.drawPile = [];
-        this.discardPile = [];
-    }
+    energy = 3;
+    handSize = 5;
+    drawPile = [];
+    discardPile = [];
     updateBlock(block, index) {
         if (block == 0) {
             $(".hero-shield-container .block-container").addClass("d-none");
@@ -30,7 +25,7 @@ class Hero extends TestChar {
             </div>
         `);
         setTimeout( () => {
-            $(`.hero-statuses .single-status-container.${statusName}`).removeClass("status-anim"); 
+            $(`.hero-statuses .single-status-container.${statusName}`).removeClass("status-anim");
         }, 1000);
     }
     updateStatus(statusNumber, statusName, index) {
@@ -39,6 +34,7 @@ class Hero extends TestChar {
             return;
         }
 
+        console.log("only here if still have status")
         $(`.hero .single-status-container.${statusName} .status-number`).text(statusNumber);
 
         $(`.hero .single-status-container.${statusName} .status-img`).addClass("status-anim");
@@ -49,7 +45,6 @@ class Hero extends TestChar {
     }
     startFightSpecific() {
         this.drawPile = hero.deck;
-        console.log(this.drawPile);
     }
     startTurnSpecific() {
         this.updateEnergy();

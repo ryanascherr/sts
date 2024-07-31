@@ -19,7 +19,6 @@ class TestChar {
     }
     takeDamage(damage, attacker, index) {
         damage = this.calcWeak(damage, attacker);
-
         damage = this.calcVulnerable(damage);
 
         if (this.block != 0) {
@@ -101,13 +100,12 @@ class TestChar {
         this.newVulnerable = this.vulnerable == 0 ? true : false;
 
         this.vulnerable += number;
-
         console.log(this.name + " has " + this.vulnerable + " vulnerable.");
 
         if (this.newVulnerable) this.addNewStatus(this.vulnerable, "vulnerable", index);
         if (!this.newVulnerable) this.updateStatus(this.vulnerable, "vulnerable", index);
     }
-    applyWeak(number) {
+    applyWeak(number, index) {
         this.newWeak = this.weak == 0 ? true : false;
 
         this.weak += number;
@@ -116,7 +114,7 @@ class TestChar {
         if (this.newWeak) this.addNewStatus(this.weak, "weak", index);
         if (!this.newWeak) this.updateStatus(this.weak, "weak", index);
     }
-    applyFrail(number) {
+    applyFrail(number, index) {
         this.newFrail = this.frail == 0 ? true : false;
 
         this.frail += number;
@@ -139,7 +137,7 @@ class TestChar {
         this.removeBlock(index);
     }
     removeBlock(index) {
-        this.block == 0;
+        this.block = 0;
         this.updateBlock(this.block, index);
         console.log(this.name + " loses all block.");
     }
@@ -147,19 +145,25 @@ class TestChar {
     }
     endRound(index) {
         if (this.vulnerable != 0) {
+            if (!this.newVulnerable) {
+                this.vulnerable--;
+                this.updateStatus(this.vulnerable, "vulnerable", index);
+            }
             this.newVulnerable = false;
-            this.vulnerable--;
-            this.updateStatus(this.vulnerable, "vulnerbable", index);
         }
         if (this.weak != 0) {
+            if (!this.newWeak) {
+                this.weak--;
+                this.updateStatus(this.weak, "weak", index);
+            }
             this.newWeak = false;
-            this.weak--;
-            this.updateStatus(this.weak, "weak", index);
         }
         if (this.frail != 0) {
+            if (!this.newFrail) {
+                this.frail--;
+                this.updateStatus(this.frail, "frail", index);
+            }
             this.newFrail = false;
-            this.frail--;
-            this.updateStatus(this.frail, "frial", index);
         }
     }
     endRoundSpecific() {

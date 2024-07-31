@@ -255,7 +255,7 @@ class Cultist extends Enemy2 {
     }
 }
 
-class JawWorm extends Enemy {
+class JawWorm extends Enemy2 {
     src = "jaw_worm";
     chompCounter = 0;
     thrashCounter = 0;
@@ -355,7 +355,7 @@ class JawWorm extends Enemy {
     }
 }
 
-class RedLouse extends Enemy {
+class RedLouse extends Enemy2 {
     src = "red_louse";
     biteCounter = 0;
     growCounter = 0;
@@ -443,7 +443,7 @@ class RedLouse extends Enemy {
     }
 }
 
-class GreenLouse extends Enemy {
+class GreenLouse extends Enemy2 {
     src = "green_louse";
     biteCounter = 0;
     spitWebCounter = 0;
@@ -512,7 +512,7 @@ class GreenLouse extends Enemy {
     }
     spitWeb(index) {
         enemyAttack(index);
-        hero.applyWeak(2);
+        hero.applyWeak(2, index);
     }
     takeDamageSpecific(index) {
         if (!this.hasUsedCurlUp) {
@@ -529,7 +529,7 @@ class GreenLouse extends Enemy {
     }
 }
 
-class AcidSlimeM extends Enemy {
+class AcidSlimeM extends Enemy2 {
     src = "acid_slime-m";
     corrosiveSpitCounter = 0;
     lickCounter = 0;
@@ -611,7 +611,7 @@ class AcidSlimeM extends Enemy {
     }
     lick(index) {
         enemyAttack(index);
-        hero.applyWeak(1);
+        hero.applyWeak(1, index);
     }
     tackle(index) {
         let damage = 10 + this.strength;
@@ -621,7 +621,7 @@ class AcidSlimeM extends Enemy {
     }
 }
 
-class AcidSlimeS extends Enemy {
+class AcidSlimeS extends Enemy2 {
     src = "acid_slime-s";
     lickCounter = 0;
     tackleCounter = 0;
@@ -677,7 +677,7 @@ class AcidSlimeS extends Enemy {
     }
     lick(index) {
         enemyAttack(index);
-        hero.applyWeak(1);
+        hero.applyWeak(1, index);
     }
     tackle(index) {
         let damage = 3 + this.strength;
@@ -687,7 +687,7 @@ class AcidSlimeS extends Enemy {
     }
 }
 
-class SpikeSlimeM extends Enemy {
+class SpikeSlimeM extends Enemy2 {
     src = "spike_slime-m";
     lickCounter = 0;
     flameTackleCounter = 0;
@@ -740,7 +740,7 @@ class SpikeSlimeM extends Enemy {
     }
     lick(index) {
         enemyAttack(index);
-        hero.applyFrail(1);
+        hero.applyFrail(1, index);
     }
     flameTackle(index) {
         let damage = 8 + this.strength;
@@ -752,7 +752,7 @@ class SpikeSlimeM extends Enemy {
     }
 }
 
-class SpikeSlimeS extends Enemy {
+class SpikeSlimeS extends Enemy2 {
     src = "spike_slime-s";
     decideAction() {
         this.declaredAction = "Tackle";
@@ -779,7 +779,7 @@ class SpikeSlimeS extends Enemy {
     }
 }
 
-class TestEnemy extends Enemy {
+class TestEnemy extends Enemy2 {
     src = "acid_slime-s";
     decideAction() {
         if (Math.abs(turn % 2) == 1) {
@@ -812,7 +812,7 @@ class TestEnemy extends Enemy {
         }
     }
     lick() {
-        hero.applyWeak(3);
+        hero.applyWeak(2);
     }
     doNothing() {
         hero.applyVulnerable(2);
@@ -820,7 +820,7 @@ class TestEnemy extends Enemy {
     }
 }
 
-class BlueSlaver extends Enemy {
+class BlueSlaver extends Enemy2 {
     src = "blue_slaver";
     stabCounter = 0;
     rakeCounter = 0;
@@ -867,26 +867,28 @@ class BlueSlaver extends Enemy {
     }
     performAction(index) {
         if (this.declaredAction == "Stab") {
-            this.stab();
+            this.stab(index);
         }
         if (this.declaredAction == "Rake") {
-            this.rake();
+            this.rake(index);
         }
     }
-    stab() {
+    stab(index) {
         let damage = 12 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
     }
-    rake() {
+    rake(index) {
         let damage = 7 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
-        hero.applyWeak(1);
+        hero.applyWeak(1, index);
     }
 }
 
-class FungiBeast extends Enemy {
+class FungiBeast extends Enemy2 {
     src = "fungi_beast";
     biteCounter = 0;
     growCounter = 0;
@@ -930,25 +932,27 @@ class FungiBeast extends Enemy {
     }
     performAction(index) {
         if (this.declaredAction == "Bite") {
-            this.bite();
+            this.bite(index);
         }
         if (this.declaredAction == "Grow") {
-            this.grow();
+            this.grow(index);
         }
     }
-    bite() {
+    bite(index) {
         let damage = 6 + this.strength;
         console.log(this.name + " attacks " + hero.name + ".");
+        enemyAttack(index);
         hero.takeDamage(damage, this);
     }
-    grow() {
+    grow(index) {
         this.strength += 3;
+        enemyBuff(index);
         console.log(this.name + " gains 3 strength. Strength is " + this.strength + ".");
     }
 }
 
-let actOneEarlyEncounters = ["cultist"];
-// let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
+// let actOneEarlyEncounters = ["blueSlaver"];
+let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
 let actOneOtherEncounters = ["blueSlaver", "fungiBeasts"];
 let enemy;
 let enemyArray = [];

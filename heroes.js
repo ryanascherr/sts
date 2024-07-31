@@ -236,9 +236,11 @@ class Character {
 }
 
 class Ironclad extends Hero {
-    constructor(name, maxHealth) {
-        super(name, maxHealth);
-    }
+    // constructor(name, maxHealth) {
+    //     super(name, maxHealth);
+    // }
+    maxHealth = 70;
+    currentHealth = 70;
     deck = [1, 1, 1, 1, 1, 2, 2, 2, 2, 3];
 }
 

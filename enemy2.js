@@ -22,7 +22,7 @@ class Enemy2 extends TestChar {
             $(correctShieldContainer).addClass("d-none");
         }
         if (block != 0) {
-            correctShieldContainer = $(".enemy-shield-container .block-container")[index];
+            let correctShieldContainer = $(".enemy-shield-container .block-container")[index];
             $(correctShieldContainer).removeClass("d-none");
         }
 

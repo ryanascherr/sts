@@ -5,10 +5,11 @@
 //slimed removed when fight ends
 //animations
 //incantation
-//bash disappearing sometimes
+//applying and affecting hero statuses
+//'newStatus' not working correctly
 
 let act = 1;
-let floor = 2;
+let floor = 5;
 let turn;
 let canClickCard = true;
 
@@ -66,8 +67,10 @@ function endPlayerTurn() {
 }
 
 function startEnemyTurn() {
+    console.log("-- " + hero.name + "'s turn is over. Enemies' turn. --");
     $(enemyArray).each(function(index) {
         this.startTurn(index);
+        this.startTurnSpecific(index);
     })
     endRound();
     if (!hero.isAlive) {
@@ -125,7 +128,7 @@ $(document).on('click','.enemy-img.highlight',function(){
     let targetedEnemy = enemyArray[enemyIndex];
     $(newCardArray).each(function() {
         if (this.id == cardId) {
-            this.performEffect(targetedEnemy, enemyIndex);
+            this.performEffect(targetedEnemy, hero, enemyIndex);
             hero.energy -= this.cost;
             $(".hero-energy").html(hero.energy);
             unhighlightEnemies();
@@ -139,6 +142,17 @@ $(".js_end-turn").click(function() {
 });
 
 function decideEnemy() {
+
+    // let newEnemy = new TestEnemy("TEST", 50, 100);
+    // enemyArray.push(newEnemy);
+
+    // $(".enemies").empty();
+    // $(enemyArray).each(function(index) {
+    //     placeEnemy(this, index);
+    // });
+
+    // return;
+
     if (act == 1) {
         // let testEnemy = new TestEnemy("TEST", 50, 100);
         // enemyArray.push(testEnemy);
