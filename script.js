@@ -3,10 +3,9 @@
 //cards array thing
 //consolidate status applications into 1 function
 //slimed removed when fight ends
-//animations
 //incantation
-//applying and affecting hero statuses
-//'newStatus' not working correctly
+//enemy new status hangs for too long
+//update top health
 
 let act = 1;
 let floor = 5;
@@ -279,8 +278,8 @@ function winFight() {
 
 function fillNav() {
     $(".nav_class").text("the " + hero.name);
-    $(".nav_currentHealth").text(hero.currentHealth);
-    $(".nav_maxHealth").text(hero.maxHealth);
+    $(".nav_current-health").text(hero.currentHealth);
+    $(".nav_max-health").text(hero.maxHealth);
 }
 
 fillNav();

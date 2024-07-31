@@ -1,4 +1,4 @@
-class TestChar {
+class Character {
     constructor(name) {
         this.name = name;
         this.block = 0;

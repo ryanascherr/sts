@@ -1,104 +1,42 @@
-class Enemy {
+class Enemy extends Character {
     constructor(name, healthMin, healthMax) {
+        super();
         this.name = name;
         this.maxHealth = getRandomNumber(healthMax, healthMin);
         this.currentHealth = this.maxHealth;
-        this.block = 0;
-        this.strength = 0;
-        this.dexterity = 0;
-        this.vulnerable = 0;
-        this.newVulnerable = false;
-        this.weak = 0;
-        this.frail = 0;
         this.declaredAction = "";
         this.intentIcon = "";
     }
-    takeDamage(damage, index) {
-        if (hero.weak != 0) {
-            damage = Math.floor(damage*.75);
+    decideAction() {
+
+    }
+    showIntent() {
+
+    }
+    performAction(index) {
+
+    }
+    updateBlock(block, index) {
+        if (block == 0) {
+            let correctShieldContainer = $(".enemy-shield-container .block-container")[index];
+            $(correctShieldContainer).addClass("d-none");
         }
-        if (this.vulnerable != 0) {
-            damage = Math.floor(damage*1.5);
-        }
-        if (this.block != 0) {
-            let currentBlock = this.block;
-            this.block -= damage;
-            if (this.block < 0) {
-                this.block = 0;
-            }
-            if (this.block == 0) {
-                let correctShieldContainer = $(".enemy-shield-container .block-container")[index];
-                $(correctShieldContainer).addClass("d-none");
-            }
-            let correctShieldNumber = $(".enemy-shield-container .block-container .block-number")[index];
-            $(correctShieldNumber).html(this.block);
-            damage = damage - currentBlock;
-            if (damage <= 0) {
-                damage = 0;
-            }
-        }
-        this.currentHealth -= damage;
-        if (this.currentHealth < 0) {
-            this.currentHealth = 0;
+        if (block != 0) {
+            let correctShieldContainer = $(".enemy-shield-container .block-container")[index];
+            $(correctShieldContainer).removeClass("d-none");
         }
 
+        let correctShieldNumber = $(".enemy-shield-container .block-container .block-number")[index];
+        $(correctShieldNumber).text(this.block);
+    }
+    updateHealth(index) {
         let enemyHealthBars = $(".enemy-health progress");
         let currentEnemyHealthBar = enemyHealthBars[index];
         $(currentEnemyHealthBar).attr("value", this.currentHealth);
 
         let enemyCurrentHealths = $(".enemy-health .current-health");
         let currentCurrentHealth = enemyCurrentHealths[index];
-        $(currentCurrentHealth).html(this.currentHealth);
-
-        let enemyMaxHealths = $(".enemy-health .max-health");
-        let currentMaxtHealth = enemyMaxHealths[index];
-        $(currentMaxtHealth).html(this.maxHealth);
-
-        console.log(this.name + " takes " + damage + " damage. " + this.name + "'s health is now " + this.currentHealth + "/" + this.maxHealth + ".");
-
-        if (this.currentHealth <= 0) {
-            this.die(index);
-        }
-
-        this.takeDamageSpecific(index);
-    }
-    gainBlock(block, index) {
-        if (this.frail != 0) {
-            block = Math.floor(block*.75);
-        }
-        this.block += block;
-        if (this.block != 0) {
-            let correctShieldContainer = $(".enemy-shield-container .block-container")[index];
-            let correctShieldNumber = $(".enemy-shield-container .block-container .block-number")[index];
-            $(correctShieldContainer).removeClass("d-none");
-            $(correctShieldNumber).html(this.block);
-        }
-        console.log(this.name + " gains " + block + " block. They have " + this.block + " block.");
-    }
-    applyVulnerable(number, index) {
-        if (this.vulnerable == 0) {
-            this.newVulnerable = true;
-        }
-
-        this.vulnerable += number;
-        console.log(this.name + " has " + this.vulnerable + " vulnerable.");
-
-        if (this.newVulnerable) {
-            this.addNewStatus(this.vulnerable, "vulnerable", index);
-        } else {
-            this.updateStatus(this.vulnerable, "vulnerable", index);
-        }
-    }
-    applyWeak(number) {
-        this.weak += number;
-        console.log(this.name + "has " + this.weak + " weak.")
-    }
-    applyFrail(number) {
-        if (this.frail == 0) {
-            this.newFrail = true;
-        }
-        this.frail += number;
-        console.log(this.name + " has " + this.frail + " frail.")
+        $(currentCurrentHealth).text(this.currentHealth);
     }
     addNewStatus(statusNumber, statusName, index) {
         let correctStatus = $(".enemy-statuses")[index];
@@ -114,8 +52,13 @@ class Enemy {
         }, 1000);
     }
     updateStatus(statusNumber, statusName, index) {
+        if (statusNumber == 0) {
+            $(`.enemies .single-status-container.${statusName}`).remove();
+            return;
+        }
+
         let correctStatusNumber = $(`.enemies .single-status-container.${statusName} .status-number`)[index];
-        $(correctStatusNumber).html(statusNumber);
+        $(correctStatusNumber).text(statusNumber);
 
         let correctSpecificStatus = $(`.single-status-container[data-index="${index}"].${statusName} .status-img`);
         $(correctSpecificStatus).addClass("status-anim");
@@ -123,85 +66,40 @@ class Enemy {
             $(correctSpecificStatus).removeClass("status-anim"); 
         }, 1000);
     }
+    preTurn(index) {
+        let currentEnemy = enemyArray[index];
+
+        let enemyCurrentHealths = $(".enemy-health .current-health");
+        $(enemyCurrentHealths[index]).text(currentEnemy.currentHealth);
+
+        let enemyMaxHealths = $(".enemy-health .max-health");
+        $(enemyMaxHealths[index]).text(currentEnemy.maxHealth);
+
+        let enemyIntents = $(".enemies .intent-icon");
+        $(enemyIntents[index]).attr("src", " ");
+        
+        let enemyDamageNumbers = $(".enemies .damage-number");
+        $(enemyDamageNumbers[index]).text("");
+        
+        currentEnemy.decideAction();
+        currentEnemy.showIntent(index);
+    }
+    startTurnSpecific(index) {
+        this.performAction(index);
+    }
     die(index) {
         let perishedEnemy = $(".one-enemy")[index];
         $(perishedEnemy).remove();
         enemyArray.splice(index, 1);
         if (enemyArray.length == 0) {
             winFight();
-            return;
         };
-
-        this.dieSpecific(index);
-    }
-    startFight() {
-
-    }
-    preTurn(index) {
-        let currentEnemy = enemyArray[index];
-
-        let enemyCurrentHealths = $(".enemy-health .current-health");
-        $(enemyCurrentHealths[index]).html(currentEnemy.currentHealth);
-
-        let enemyMaxHealths = $(".enemy-health .max-health");
-        $(enemyMaxHealths[index]).html(currentEnemy.maxHealth);
-
-        let enemyIntents = $(".enemies .intent-icon");
-        $(enemyIntents[index]).attr("src", " ");
-        
-        let enemyDamageNumbers = $(".enemies .damage-number");
-        $(enemyDamageNumbers[index]).html("");
-        
-        currentEnemy.decideAction();
-        currentEnemy.showIntent(index);
-    }
-    startTurn(index) {
-        if (this.block != 0) {
-            this.block = 0;
-            console.log(this.name + " loses all block.");
-            
-            let correctShieldContainer = $(".enemy-shield-container .block-container")[index];
-            $(correctShieldContainer).addClass("d-none");
-            
-            let correctShieldNumber = $(".enemy-shield-container .block-container .block-number")[index];
-            $(correctShieldNumber).html(this.block);
-        }
-
-        this.performAction(index);
-    }
-    endRoundGeneral(index) {
-        if (this.vulnerable != 0) {
-            this.newVulnerable = false;
-            this.vulnerable -= 1;
-            console.log(this.name + " has " + this.vulnerable + " vulnerable.");
-
-            let statusBox = ($(`.enemies .single-status-container.vulnerable[data-index="${index}"]`));
-            let numberBox = $(`.enemies .single-status-container.vulnerable .status-number[data-index="${index}"]`)
-            if (this.vulnerable == 0) {
-                $(statusBox).remove();
-            } else {
-                $(numberBox).html(this.vulnerable);
-            }
-        }
-        //TODO work on these
-        if (this.weak != 0) {
-            this.weak -= 1;
-            console.log(this.name + " has " + this.weak + " weak.");
-        }
-        if (this.frail != 0) {
-            this.frail -= 1;
-            console.log(this.name + " has " + this.frail + " frail.");
-        }
-    }
-    endRoundSpecific() {
-    }
-    takeDamageSpecific() {
     }
     dieSpecific() {
     }
 }
 
-class Cultist extends Enemy2 {
+class Cultist extends Enemy {
     src = "cultist";
     hasIncanted = false;
     decideAction() {
@@ -255,7 +153,7 @@ class Cultist extends Enemy2 {
     }
 }
 
-class JawWorm extends Enemy2 {
+class JawWorm extends Enemy {
     src = "jaw_worm";
     chompCounter = 0;
     thrashCounter = 0;
@@ -355,7 +253,7 @@ class JawWorm extends Enemy2 {
     }
 }
 
-class RedLouse extends Enemy2 {
+class RedLouse extends Enemy {
     src = "red_louse";
     biteCounter = 0;
     growCounter = 0;
@@ -443,7 +341,7 @@ class RedLouse extends Enemy2 {
     }
 }
 
-class GreenLouse extends Enemy2 {
+class GreenLouse extends Enemy {
     src = "green_louse";
     biteCounter = 0;
     spitWebCounter = 0;
@@ -529,7 +427,7 @@ class GreenLouse extends Enemy2 {
     }
 }
 
-class AcidSlimeM extends Enemy2 {
+class AcidSlimeM extends Enemy {
     src = "acid_slime-m";
     corrosiveSpitCounter = 0;
     lickCounter = 0;
@@ -621,7 +519,7 @@ class AcidSlimeM extends Enemy2 {
     }
 }
 
-class AcidSlimeS extends Enemy2 {
+class AcidSlimeS extends Enemy {
     src = "acid_slime-s";
     lickCounter = 0;
     tackleCounter = 0;
@@ -687,7 +585,7 @@ class AcidSlimeS extends Enemy2 {
     }
 }
 
-class SpikeSlimeM extends Enemy2 {
+class SpikeSlimeM extends Enemy {
     src = "spike_slime-m";
     lickCounter = 0;
     flameTackleCounter = 0;
@@ -752,7 +650,7 @@ class SpikeSlimeM extends Enemy2 {
     }
 }
 
-class SpikeSlimeS extends Enemy2 {
+class SpikeSlimeS extends Enemy {
     src = "spike_slime-s";
     decideAction() {
         this.declaredAction = "Tackle";
@@ -779,7 +677,7 @@ class SpikeSlimeS extends Enemy2 {
     }
 }
 
-class TestEnemy extends Enemy2 {
+class TestEnemy extends Enemy {
     src = "acid_slime-s";
     decideAction() {
         if (Math.abs(turn % 2) == 1) {
@@ -820,7 +718,7 @@ class TestEnemy extends Enemy2 {
     }
 }
 
-class BlueSlaver extends Enemy2 {
+class BlueSlaver extends Enemy {
     src = "blue_slaver";
     stabCounter = 0;
     rakeCounter = 0;
@@ -888,7 +786,7 @@ class BlueSlaver extends Enemy2 {
     }
 }
 
-class FungiBeast extends Enemy2 {
+class FungiBeast extends Enemy {
     src = "fungi_beast";
     biteCounter = 0;
     growCounter = 0;
