@@ -11,14 +11,13 @@ let act = 1;
 let floor = 5;
 let turn;
 let canClickCard = true;
-
-let cardsArray = [strike_ironclad, defend_ironclad, bash, slimed];
-
 let heroHealthBar = $(".hero progress");
 let enemyHealthBar = $(".enemies progress");
 
-function gameOver() {
-    console.log("GAME OVER");
+function fillNav() {
+    $(".nav_class").text("the " + hero.name);
+    $(".nav_current-health").text(hero.currentHealth);
+    $(".nav_max-health").text(hero.maxHealth);
 }
 
 $(".js_start-fight").click(function() {
@@ -38,106 +37,6 @@ $(".js_start-fight").click(function() {
     })
     turn = 1;
     startFight();
-    startPlayerTurn();
-});
-
-function startFight() {
-    hero.startFight();
-    hero.startFightSpecific();
-    $(enemyArray).each(function(index){
-        this.startFight(index);
-        this.startFightSpecific(index);
-    })
-}
-
-function startPlayerTurn() {
-    console.log("-- Turn " + turn + " --");
-    
-    hero.startTurn();
-    hero.startTurnSpecific();
-    $(enemyArray).each(function(index){
-        this.preTurn(index);
-    })
-}
-
-function endPlayerTurn() {
-    hero.endTurn();
-    hero.endTurnSpecific();
-}
-
-function startEnemyTurn() {
-    console.log("-- " + hero.name + "'s turn is over. Enemies' turn. --");
-    $(enemyArray).each(function(index) {
-        this.startTurn(index);
-        this.startTurnSpecific(index);
-    })
-    endRound();
-    if (!hero.isAlive) {
-        gameOver();
-    }
-}
-function endRound() {
-    hero.endRound();
-    hero.endRoundSpecific();
-
-    $(enemyArray).each(function(index) {
-        this.endRound(index);
-        this.endRoundSpecific(index);
-    })
-    turn ++;
-    startPlayerTurn();
-}
-
-$(document).on('click','.card',function(){
-    if (!canClickCard) return;
-    let cardClicked = this;
-    let cardId = parseInt($(this).attr("data-id"));
-    let chosenCard;
-    $(cardsArray).each(function() {
-        if (this.id == cardId) {
-            chosenCard = this;
-        }
-    });
-    let cost = chosenCard.cost;
-    if (hero.energy < cost) return;
-
-    let target;
-    if (chosenCard.type == "Attack") {
-        if (enemyArray.length == 1) {
-            target = enemyArray[0];
-            chosenCard.performEffect(target, hero, 0);
-            hero.energy -= cost;
-            $(".hero-energy").html(hero.energy);
-        } else {
-            highlightEnemies(cardId);
-        }
-    } else {
-        chosenCard.performEffect(target);
-        hero.energy -= cost;
-        $(".hero-energy").html(hero.energy);
-    }
-
-    hero.discardPile.push(cardId);
-    $(cardClicked).remove();
-});
-
-$(document).on('click','.enemy-img.highlight',function(){
-    let cardId = $(this).attr("data-id");
-    let enemyIndex = $(this).attr("data-index");
-    let targetedEnemy = enemyArray[enemyIndex];
-    $(newCardArray).each(function() {
-        if (this.id == cardId) {
-            this.performEffect(targetedEnemy, hero, enemyIndex);
-            hero.energy -= this.cost;
-            $(".hero-energy").html(hero.energy);
-            unhighlightEnemies();
-        }
-    })
-})
-
-$(".js_end-turn").click(function() {
-    endPlayerTurn();
-    startEnemyTurn();
 });
 
 function decideEnemy() {
@@ -251,12 +150,118 @@ function placeEnemy(currentEnemy, index) {
     `)
 }
 
+function startFight() {
+    hero.startFight();
+    hero.startFightSpecific();
+    $(enemyArray).each(function(index){
+        this.startFight(index);
+        this.startFightSpecific(index);
+    });
+    startPlayerTurn();
+}
+
+function initialize() {
+    fillNav();
+}
+
+function startPlayerTurn() {
+    console.log("-- Turn " + turn + " --");
+    
+    hero.startTurn();
+    hero.startTurnSpecific();
+
+    $(enemyArray).each(function(index){
+        this.preTurn(index);
+    })
+}
+
+$(".js_end-turn").click(function() {
+    endPlayerTurn();
+    startEnemyTurn();
+});
+
+function endPlayerTurn() {
+    hero.endTurn();
+    hero.endTurnSpecific();
+}
+
+function startEnemyTurn() {
+    console.log("-- " + hero.name + "'s turn is over. Enemies' turn. --");
+    $(enemyArray).each(function(index) {
+        this.startTurn(index);
+        this.startTurnSpecific(index);
+    })
+    endRound();
+    if (!hero.isAlive) {
+        gameOver();
+    }
+}
+
+function endRound() {
+    hero.endRound();
+    hero.endRoundSpecific();
+
+    $(enemyArray).each(function(index) {
+        this.endRound(index);
+        this.endRoundSpecific(index);
+    })
+    turn ++;
+    startPlayerTurn();
+}
+
+$(document).on('click','.card',function(){
+    if (!canClickCard) return;
+    let cardClicked = this;
+    let cardId = parseInt($(this).attr("data-id"));
+    let chosenCard;
+    $(cardsArray).each(function() {
+        if (this.id == cardId) {
+            chosenCard = this;
+        }
+    });
+    let cost = chosenCard.cost;
+    if (hero.energy < cost) return;
+
+    let target;
+    if (chosenCard.type == "Attack") {
+        if (enemyArray.length == 1) {
+            target = enemyArray[0];
+            chosenCard.performEffect(target, hero, 0);
+            hero.energy -= cost;
+            $(".hero-energy").html(hero.energy);
+        } else {
+            highlightEnemies(cardId);
+        }
+    } else {
+        chosenCard.performEffect(target);
+        hero.energy -= cost;
+        $(".hero-energy").html(hero.energy);
+    }
+
+    hero.discardPile.push(cardId);
+    $(cardClicked).remove();
+});
+
 function highlightEnemies(cardId) {
     $(".enemy-img").addClass("highlight");
     $(".enemy-img").attr("data-id", cardId);
     canClickCard = false;
     $(".card").addClass("disabled");
 }
+
+$(document).on('click','.enemy-img.highlight',function(){
+    let cardId = $(this).attr("data-id");
+    let enemyIndex = $(this).attr("data-index");
+    let targetedEnemy = enemyArray[enemyIndex];
+    $(newCardArray).each(function() {
+        if (this.id == cardId) {
+            this.performEffect(targetedEnemy, hero, enemyIndex);
+            hero.energy -= this.cost;
+            $(".hero-energy").html(hero.energy);
+            unhighlightEnemies();
+        }
+    })
+})
 
 function unhighlightEnemies() {
     $(".enemy-img").removeClass("highlight");
@@ -276,18 +281,10 @@ function winFight() {
     $(".hero-statuses").empty();
 }
 
-function fillNav() {
-    $(".nav_class").text("the " + hero.name);
-    $(".nav_current-health").text(hero.currentHealth);
-    $(".nav_max-health").text(hero.maxHealth);
-}
-
-fillNav();
-
-function updateHealth() {
-    $(".nav_currentHealth").text(hero.currentHealth);
-    $(".nav_maxHealth").text(hero.maxHealth);
-}
+// function updateHealth() {
+//     $(".nav_currentHealth").text(hero.currentHealth);
+//     $(".nav_maxHealth").text(hero.maxHealth);
+// }
 
 function heroAttack() {
     $(".hero-img").addClass("hero-attack-anim");
@@ -317,10 +314,11 @@ function enemyBuff(index) {
     setTimeout( () => {
         $(currentEnemyImg).removeClass("buff-anim"); 
     }, 250);
-}
+}  
 
-// console.log(hero);
-  
+function gameOver() {
+    console.log("GAME OVER");
+}
   
 
   

@@ -54,4 +54,5 @@ let defend_ironclad = new Defend_Ironclad(2, "Defend", "Ironclad", "Skill", "Com
 let bash = new Bash(3, "Bash", "Ironclad", "Attack", "Common", 2, "Deal 8 damage. Apply 2 Vulnerable.", "bash.png");
 let slimed = new Slimed(4, "Slimed", "Neutral", "Status", "Common", 1, "Exhaust", "slimed.png");
 
+let cardsArray = [strike_ironclad, defend_ironclad, bash, slimed];
 let newCardArray = [strike_ironclad, defend_ironclad, bash, slimed];
