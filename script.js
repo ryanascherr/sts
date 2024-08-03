@@ -3,9 +3,8 @@
 //cards array thing
 //consolidate status applications into 1 function
 //slimed removed when fight ends
-//incantation
 //enemy new status hangs for too long
-//update top health
+//damage intent numbers need to change when vulnerable or weak applied
 
 let act = 1;
 let floor = 5;
@@ -13,6 +12,10 @@ let turn;
 let canClickCard = true;
 let heroHealthBar = $(".hero progress");
 let enemyHealthBar = $(".enemies progress");
+
+function initialize() {
+    fillNav();
+}
 
 function fillNav() {
     $(".nav_class").text("the " + hero.name);
@@ -158,10 +161,6 @@ function startFight() {
         this.startFightSpecific(index);
     });
     startPlayerTurn();
-}
-
-function initialize() {
-    fillNav();
 }
 
 function startPlayerTurn() {
@@ -319,6 +318,8 @@ function enemyBuff(index) {
 function gameOver() {
     console.log("GAME OVER");
 }
+
+initialize();
   
 
   

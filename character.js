@@ -10,6 +10,7 @@ class Character {
         this.newWeak = false;
         this.frail = 0;
         this.newFrail = false;
+        this.ritual = 0;
         this.energy = 3;
         this.isAlive = true;
         this.handSize = 5;
@@ -123,6 +124,15 @@ class Character {
         if (this.newFrail) this.addNewStatus(this.frail, "frail", index);
         if (!this.newFrail) this.updateStatus(this.frail, "frail", index);
     }
+    applyRitual(number, index) {
+        this.newRitual = this.ritual == 0 ? true : false;
+
+        this.ritual = number;
+        console.log(this.name + " has " + this.ritual + " ritual.");
+
+        if (this.newRitual) this.addNewStatus(this.ritual, "ritual", index);
+        if (!this.newRitual) this.updateStatus(this.ritual, "ritual", index);
+    }
     addNewStatus(statusNumber, statusName, index) {
     }
     updateStatus(statusNumber, statusName, index) {
@@ -130,7 +140,7 @@ class Character {
     startFight(index) {
         this.updateHealth(index);
     }
-    startFightSpecific() {
+    startFightSpecific(index) {
 
     };
     startTurn(index) {
@@ -165,11 +175,19 @@ class Character {
             }
             this.newFrail = false;
         }
+        if (this.ritual != 0) {
+            if (!this.newRitual) {
+                this.strength += this.ritual;
+                console.log(this.name + " gained " + this.ritual + " strength. Strength is now " + this.strength);
+            }
+            this.newRitual = false;
+        }
     }
     endRoundSpecific() {
 
     }
     die(index) {
+
     }
     dieSpecific(index) {
 

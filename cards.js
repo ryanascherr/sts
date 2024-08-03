@@ -42,7 +42,6 @@ class Bash extends Card {
         }, 100);
     }
 }
-
 class Slimed extends Card {
     performEffect(target, index, cardClicked) {
         $(cardClicked).remove();
