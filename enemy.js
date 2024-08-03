@@ -87,6 +87,30 @@ class Enemy extends Character {
     startTurnSpecific(index) {
         this.performAction(index);
     }
+    endRound(index) {
+        if (this.vulnerable != 0) {
+            this.vulnerable--;
+            this.updateStatus(this.vulnerable, "vulnerable", index);
+            this.newVulnerable = false;
+        }
+        if (this.weak != 0) {
+            this.weak--;
+            this.updateStatus(this.weak, "weak", index);
+            this.newWeak = false;
+        }
+        if (this.frail != 0) {
+            this.frail--;
+            this.updateStatus(this.frail, "frail", index);
+            this.newFrail = false;
+        }
+        if (this.ritual != 0) {
+            if (!this.newRitual) {
+                this.strength += this.ritual;
+                console.log(this.name + " gained " + this.ritual + " strength. Strength is now " + this.strength);
+            }
+            this.newRitual = false;
+        }
+    }
     die(index) {
         let perishedEnemy = $(".one-enemy")[index];
         $(perishedEnemy).remove();

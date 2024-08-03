@@ -7,7 +7,7 @@
 //damage intent numbers need to change when vulnerable or weak applied
 
 let act = 1;
-let floor = 5;
+let floor = 3;
 let turn;
 let canClickCard = true;
 let heroHealthBar = $(".hero progress");

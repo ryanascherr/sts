@@ -91,6 +91,36 @@ class Hero extends Character {
             $(card).remove();
         })
     }
+    endRound(index) {
+        if (this.vulnerable != 0) {
+            if (!this.newVulnerable) {
+                this.vulnerable--;
+                this.updateStatus(this.vulnerable, "vulnerable", index);
+            }
+            this.newVulnerable = false;
+        }
+        if (this.weak != 0) {
+            if (!this.newWeak) {
+                this.weak--;
+                this.updateStatus(this.weak, "weak", index);
+            }
+            this.newWeak = false;
+        }
+        if (this.frail != 0) {
+            if (!this.newFrail) {
+                this.frail--;
+                this.updateStatus(this.frail, "frail", index);
+            }
+            this.newFrail = false;
+        }
+        if (this.ritual != 0) {
+            if (!this.newRitual) {
+                this.strength += this.ritual;
+                console.log(this.name + " gained " + this.ritual + " strength. Strength is now " + this.strength);
+            }
+            this.newRitual = false;
+        }
+    }
     die(index) {
         console.log(this.name + " has died. GAME OVER.");
     }
