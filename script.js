@@ -3,11 +3,10 @@
 //cards array thing
 //consolidate status applications into 1 function
 //slimed removed when fight ends
-//enemy new status hangs for too long
 //damage intent numbers need to change when vulnerable or weak applied
 
 let act = 1;
-let floor = 3;
+let floor = 5;
 let turn;
 let canClickCard = true;
 let heroHealthBar = $(".hero progress");
@@ -44,67 +43,20 @@ $(".js_start-fight").click(function() {
 
 function decideEnemy() {
 
-    // let newEnemy = new TestEnemy("TEST", 50, 100);
-    // enemyArray.push(newEnemy);
-
-    // $(".enemies").empty();
-    // $(enemyArray).each(function(index) {
-    //     placeEnemy(this, index);
-    // });
-
-    // return;
-
     if (act == 1) {
-        // let testEnemy = new TestEnemy("TEST", 50, 100);
-        // enemyArray.push(testEnemy);
-        // return;
         if (floor <= 3) {
             let numberOfEncounters = actOneEarlyEncounters.length;
             let randomNumber = getRandomNumber(numberOfEncounters, 1);
             enemy = actOneEarlyEncounters[randomNumber-1];
 
             if (enemy == "louses") {
-                let randomNumberOne = getRandomNumber(2, 1);
-                let randomNumberTwo = getRandomNumber(2, 1);
-
-                if (randomNumberOne == 1) {
-                    let newRedLouse = new RedLouse("Red Louse 1", 10, 15);
-                    enemyArray.push(newRedLouse);
-                } else {
-                    let newGreenLouse = new GreenLouse("Green Louse 1", 17, 11);
-                    enemyArray.push(newGreenLouse);
-                }
-                if (randomNumberTwo == 1) {
-                    let newRedLouse = new RedLouse("Red Louse 2", 10, 15);
-                    enemyArray.push(newRedLouse);
-                } else {
-                    let newGreenLouse = new GreenLouse("Green Louse 2", 17, 11);
-                    enemyArray.push(newGreenLouse);
-                }
+                makeLousesEncounter();
             } else if (enemy == "cultist") {
-                let newCultist = new Cultist("Cultist", 48, 54);
-                enemyArray.push(newCultist);
+                makeCultistEncounter();
             } else if (enemy == "jawWorm") {
-                let newJawWorm = new JawWorm("Jaw Worm", 40, 44);
-                enemyArray.push(newJawWorm);
+                makeJawWormEncounter();
             } else if (enemy == "slimes") {
-                let randomNumberOne = getRandomNumber(2, 1);
-                let randomNumberTwo = getRandomNumber(2, 1);
-
-                if (randomNumberOne == 1) {
-                    let newAcidSlimeM = new AcidSlimeM("Acid Slime M 1", 28, 32);
-                    enemyArray.push(newAcidSlimeM);
-                } else {
-                    let newSpikeSlimeM = new SpikeSlimeM("Spike Slime M 1", 28, 32);
-                    enemyArray.push(newSpikeSlimeM);
-                }
-                if (randomNumberTwo == 1) {
-                    let newAcidSlimeS = new AcidSlimeS("Acid Slime S 2", 8, 12);
-                    enemyArray.push(newAcidSlimeS);
-                } else {
-                    let newSpikeSlimeM = new SpikeSlimeS("Spike Slime S 2", 10, 14);
-                    enemyArray.push(newSpikeSlimeM);
-                }
+                makeSlimesEncounter();
             }
         } else {
             let numberOfEncounters = actOneOtherEncounters.length;
@@ -112,13 +64,15 @@ function decideEnemy() {
             enemy = actOneOtherEncounters[randomNumber-1];
             
             if (enemy == "blueSlaver") {
-                let newEnemy = new BlueSlaver("Blue Slaver", 46, 50);
-                enemyArray.push(newEnemy);
+                makeBlueSlaverEncounter();
             } else if (enemy == "fungiBeasts") {
-                let newEnemyOne = new FungiBeast("Fungi Beast 1", 22, 28);
-                enemyArray.push(newEnemyOne);
-                let newEnemyTwo = new FungiBeast("Fungi Beast 2", 22, 28);
-                enemyArray.push(newEnemyTwo);
+                makeFungiBeastsEncounter();
+            } else if (enemy == "threeLouses") {
+                makeThreeLousesEncounter();
+            } else if (enemy == "exordiumWildlife") {
+                makeExordiumWildlifeEncounter();
+            } else if (enemy == "lotsOfSlimes") {
+                makeLotsOfSlimesEncounter();
             }
         }
     }
