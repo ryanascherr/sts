@@ -55,6 +55,11 @@ function makeBlueSlaverEncounter() {
     enemyArray.push(newEnemy);
 }
 
+function makeRedSlaverEncounter() {
+    let newEnemy = new RedSlaver("Red Slaver", 46, 50);
+    enemyArray.push(newEnemy);
+}
+
 function makeFungiBeastsEncounter() {
     let newEnemyOne = new FungiBeast("Fungi Beast 1", 22, 28);
     enemyArray.push(newEnemyOne);

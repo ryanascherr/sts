@@ -4,6 +4,7 @@
 //consolidate status applications into 1 function
 //slimed removed when fight ends
 //damage intent numbers need to change when vulnerable or weak applied
+//change disabled class to disabled attribute
 
 let act = 1;
 let floor = 5;
@@ -65,6 +66,8 @@ function decideEnemy() {
             
             if (enemy == "blueSlaver") {
                 makeBlueSlaverEncounter();
+            } else if (enemy == "redSlaver") {
+                makeRedSlaverEncounter();
             } else if (enemy == "fungiBeasts") {
                 makeFungiBeastsEncounter();
             } else if (enemy == "threeLouses") {
@@ -158,7 +161,7 @@ function endRound() {
         this.endRound(index);
         this.endRoundSpecific(index);
     })
-    turn ++;
+    turn++;
     startPlayerTurn();
 }
 

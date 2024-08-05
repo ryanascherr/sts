@@ -3,6 +3,9 @@ class Hero extends Character {
     handSize = 5;
     drawPile = [];
     discardPile = [];
+    entangled = 0;
+    newEntangled = false;
+    isEntangled = false;
     updateBlock(block, index) {
         if (block == 0) {
             $(".hero-shield-container .block-container").addClass("d-none");
@@ -19,7 +22,19 @@ class Hero extends Character {
         $(".hero-health .max-health").text(this.maxHealth);
         $(".nav_max-health").text(this.maxHealth);
     }
+    applyEntangled(number, index) {
+        this.newEntangled = this.entangled == 0 ? true : false;
+
+        this.entangled += number;
+        this.isEntangled = true;
+        console.log(this.name + " has " + this.entangled + " engtangled.");
+        console.log("adding entangled");
+        console.log(this.newEntangled);
+        if (this.newEntangled) this.addNewStatus(this.entangled, "entangled", index);
+        if (!this.newTangled) this.updateStatus(this.entangled, "entangled", index);
+    }
     addNewStatus(statusNumber, statusName) {
+        console.log("adding sdffdedfe" + statusName);
         $(".hero-statuses").append(`
             <div class="single-status-container ${statusName}">
                 <img class="status-img status-anim" src="./img/icons/icon_${statusName}.png">
@@ -69,7 +84,11 @@ class Hero extends Character {
     
             cardsArray.forEach(card => {
                 if (randomCardId == card.id) {
-                    $(".hand").append(`<img class="card" data-id="${card.id}" src="./img/cards/${card.src}">`);
+                    if (hero.isEntangled && card.type == "Attack") {
+                        $(".hand").append(`<img class="card disabled" data-id="${card.id}" src="./img/cards/${card.src}">`);
+                    } else {
+                        $(".hand").append(`<img class="card" data-id="${card.id}" src="./img/cards/${card.src}">`);
+                    }
                 }
             });
     
@@ -119,6 +138,16 @@ class Hero extends Character {
                 console.log(this.name + " gained " + this.ritual + " strength. Strength is now " + this.strength);
             }
             this.newRitual = false;
+        }
+        if (this.entangled != 0) {
+            if (!this.newEntangled) {
+                this.entangled--;
+                this.updateStatus(this.entangled, "entangled", index);
+                if (this.entangled <= 0) {
+                    this.isEntangled = false;
+                }
+            }
+            this.newEntangled = false;
         }
     }
     die(index) {

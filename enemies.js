@@ -41,7 +41,7 @@ class TestEnemy extends Enemy {
 
 // let actOneEarlyEncounters = ["cultist"];
 let actOneEarlyEncounters = ["cultist", "jawWorm", "louses", "slimes"];
-// let actOneOtherEncounters = ["lotsOfSlimes"];
-let actOneOtherEncounters = ["blueSlaver", "fungiBeasts", "threeLouses", "exordiumWildlife", "lotsOfSlimes"];
+let actOneOtherEncounters = ["redSlaver"];
+// let actOneOtherEncounters = ["blueSlaver", "redSlaver", "fungiBeasts", "threeLouses", "exordiumWildlife", "lotsOfSlimes"];
 let enemy;
 let enemyArray = [];
